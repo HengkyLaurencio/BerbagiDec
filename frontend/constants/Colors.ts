@@ -23,4 +23,14 @@ export const Colors = {
     tabIconDefault: '#9BA1A6',
     tabIconSelected: tintColorDark,
   },
+  berbagiDec: {
+    primary: '#2E7D32',
+    secondary: '#DBF2EE',
+    accent: '#FF8A65',
+    background: '#FFFFFF',
+    sruface: '#F5F5F5',
+    textPrimary: '#424242',
+    textScondary: '#757575',
+    allert: '#E57373',
+  }
 };
