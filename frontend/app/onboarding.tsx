@@ -159,8 +159,10 @@ const styles = StyleSheet.create({
   },
   nextButton: {
     backgroundColor: '#2e7d32',
-    paddingVertical: 20,
-    paddingHorizontal: 150,
+    width:330,
+    height:55,
+    alignItems:'center',
+    justifyContent:'center',
     borderRadius: 8,
     marginBottom: 10,
   },
