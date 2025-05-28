@@ -1,4 +1,4 @@
-# Welcome to your Expo app 👋 g
+# Welcome to your Expo app 👋
 
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
 
@@ -8,7 +8,6 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
 
    ```bash
    npm install
-   npm install react-native-svg react-native-circular-progress-indicator
    ```
 
 2. Start the app
