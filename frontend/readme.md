@@ -8,6 +8,7 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
 
    ```bash
    npm install
+   npm install react-native-svg react-native-circular-progress-indicator
    ```
 
 2. Start the app
