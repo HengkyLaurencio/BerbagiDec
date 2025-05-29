@@ -28,7 +28,7 @@ export const Colors = {
     secondary: '#DBF2EE',
     accent: '#FF8A65',
     background: '#FFFFFF',
-    sruface: '#F5F5F5',
+    surface: '#F5F5F5',
     textPrimary: '#424242',
     textScondary: '#757575',
     allert: '#E57373',

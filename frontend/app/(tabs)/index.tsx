@@ -10,13 +10,26 @@ import {
   StatusBar,
 } from "react-native";
 import FoodCard from "../../components/FoodCard";
+import { Avatar } from "react-native-paper";
+import { Colors } from '@/constants/Colors';
+import { useNavigation } from 'expo-router';
+
 
 export default function Home() {
+  const navigation = useNavigation();
   return (
+    
     <ScrollView style={styles.container}>
-      <StatusBar barStyle="dark-content" />
-      <Text style={styles.greeting}>Selamat Pagi, Albert</Text>
-
+      <StatusBar barStyle="dark-content"/>
+      <View style={styles.header}>
+        <Text style={styles.greeting}>Selamat Pagi, Albert</Text>
+        <TouchableOpacity onPress={() => navigation.navigate('profile')}>
+          <Image
+            source={require('@/assets/images/profile.jpeg')}
+            style={styles.avatar}
+          />
+        </TouchableOpacity>
+      </View>
       <View style={styles.searchContainer}>
         <TextInput placeholder="Search" style={styles.searchInput} />
       </View>
@@ -83,15 +96,30 @@ export default function Home() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+
     backgroundColor: "#f9f9f9",
   },
-  greeting: {
-    fontSize: 22,
-    fontWeight: "bold",
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 18,
     marginTop: 40,
-    marginHorizontal: 16,
   },
+
+  greeting: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: Colors.berbagiDec.textPrimary,
+  },
+
+  avatar: {
+    width: 30,
+    height: 30,
+    borderRadius: 20,
+    backgroundColor: Colors.berbagiDec.surface,
+  },
+
   searchContainer: {
     margin: 16,
     borderWidth: 2,
