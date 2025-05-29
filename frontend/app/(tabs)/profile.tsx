@@ -11,7 +11,7 @@ export default function ProfileScreen() {
     <View style={styles.container}>
       <View style={styles.header}>
         <Ionicons name="arrow-back" size={24} color={Colors.berbagiDec.textPrimary} onPress={() => navigation.goBack()} />
-        <Text style={styles.title}>Profile</Text>
+        <Text style={styles.title}>Profil</Text>
       </View>
 
       <View style={styles.profileSection}>
@@ -23,27 +23,27 @@ export default function ProfileScreen() {
         <Text style={styles.name}>Albert Suprianto</Text>
         <Text style={styles.email}>albert.suprianto@gmail.com</Text>
         <TouchableOpacity style={styles.editButton}>
-          <Text style={styles.editText}>Edit Profile</Text>
+          <Text style={styles.editText}>Edit Profil</Text>
         </TouchableOpacity>
         </View>
       </View>
 
-      <View style={styles.menu}>
-        <SettingsContainer icon="settings-outline" label="Setting" />
-        <SettingsContainer icon="location-outline" label="Location" />
-        <SettingsContainer icon="time-outline" label="History" />
-        <SettingsContainer icon="log-out-outline" label="LogOut" />
+      <View style={styles.profileContainer}>
+        <ProfileContainer icon="settings-outline" label="Setting" />
+        <ProfileContainer icon="location-outline" label="Lokasi" />
+        <ProfileContainer icon="time-outline" label="Riwayat" />
+        <ProfileContainer icon="log-out-outline" label="Keluar" />
       </View>
     </View>
   );
 }
 
-function SettingsContainer({ icon, label }: { icon: any; label: string }) {
+function ProfileContainer({ icon, label }: { icon: any; label: string }) {
   return (
-    <TouchableOpacity style={styles.menuItem}>
-      <View style={styles.menuLeft}>
+    <TouchableOpacity style={styles.profileItem}>
+      <View style={styles.profileLeft}>
         <Ionicons name={icon} size={22} color={Colors.berbagiDec.primary} />
-        <Text style={styles.menuLabel}>{label}</Text>
+        <Text style={styles.profileLabel}>{label}</Text>
       </View>
       <Ionicons name="chevron-forward" size={20} />
     </TouchableOpacity>
@@ -104,11 +104,11 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 12, 
   },
-  menu: {
+  profileContainer: {
     gap: 10,
     paddingHorizontal: 20,
   },
-  menuItem: {
+  profileItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     padding: 14,
@@ -116,12 +116,12 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.berbagiDec.surface,
     alignItems: 'center',
   },
-  menuLeft: {
+  profileLeft: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 10,
   },
-  menuLabel: {
+  profileLabel: {
     fontSize: 16,
     color: Colors.berbagiDec.textPrimary,
   },
