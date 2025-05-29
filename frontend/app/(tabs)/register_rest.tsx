@@ -11,18 +11,19 @@ import {
 import { Feather } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 
-export default function Register() {
+export default function RegisterRestoran() {
   const router = useRouter();
   const [email, setEmail] = useState('');
-  const [username, setUsername] = useState('');
+  const [restaurantName, setRestaurantName] = useState('');
+  const [restaurantAddress, setRestaurantAddress] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const handleRegister = () => {
-    // Handle register logic here
-    console.log('Register pressed');
+    // Logic untuk register restoran
+    console.log('Register Restoran pressed');
   };
 
   return (
@@ -32,26 +33,34 @@ export default function Register() {
       </TouchableOpacity>
 
       <View style={styles.greenHeader}>
-        <Text style={styles.headerTitle}>Daftar Akun</Text>
+        <Text style={styles.headerTitle}>Daftar Restoran</Text>
       </View>
 
       <View style={styles.formContainer}>
         <Text style={styles.label}>EMAIL</Text>
         <TextInput
           style={styles.input}
-          placeholder="example@gmail.com"
+          placeholder="restoran@gmail.com"
           placeholderTextColor="#aaa"
           value={email}
           onChangeText={setEmail}
         />
 
-        <Text style={[styles.label, { marginTop: 20 }]}>NAMA USER</Text>
+        <Text style={[styles.label, { marginTop: 20 }]}>NAMA RESTORAN</Text>
         <TextInput
           style={styles.input}
-          placeholder="Nama Lengkap"
+          placeholder="Contoh: Warteg Sederhana"
           placeholderTextColor="#aaa"
-          value={username}
-          onChangeText={setUsername}
+          value={restaurantName}
+          onChangeText={setRestaurantName}
+        />
+        <Text style={[styles.label, { marginTop: 20 }]}>ALAMAT RESTORAN</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Contoh: Jl. Tanjung Duren Barat No. 1"
+          placeholderTextColor="#aaa"
+          value={restaurantAddress}
+          onChangeText={setRestaurantAddress}
         />
 
         <Text style={[styles.label, { marginTop: 20 }]}>PASSWORD</Text>
@@ -104,8 +113,10 @@ export default function Register() {
         </Text>
 
         <Text style={styles.registerText}>
-            Daftar sebagai restoran?{' '}
-            <Text style={styles.registerLink} onPress={() => router.replace('/register_rest')}>Klik di sini</Text>
+          Daftar sebagai pengguna?{' '}
+          <Text style={styles.registerLink} onPress={() => router.replace('/register_user')}>
+            Klik di sini
+          </Text>
         </Text>
       </View>
     </SafeAreaView>
@@ -125,15 +136,13 @@ const styles = StyleSheet.create({
   },
   greenHeader: {
     alignItems: 'center',
-    marginTop: 20,
-    marginBottom: -20,
+    marginBottom:5,
     zIndex: 1,
   },
   headerTitle: {
-    textShadowOffset: {width: 0, height:5},
+    textShadowOffset: { width: 0, height: 5 },
     textShadowRadius: 7,
-    marginTop: 125,
-    marginBottom: 25,
+    marginTop: 85,
     fontSize: 28,
     color: '#fff',
     fontWeight: 'bold',
@@ -190,13 +199,11 @@ const styles = StyleSheet.create({
     color: '#2e7d32',
     fontWeight: 'bold',
   },
-
   registerText: {
     textAlign: 'center',
     marginTop: 12,
     color: '#666',
   },
-
   registerLink: {
     color: '#2e7d32',
     fontWeight: 'bold',
