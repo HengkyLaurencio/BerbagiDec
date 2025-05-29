@@ -83,8 +83,14 @@ export default function Login() {
 
         <Text style={styles.registerText}>
           Tidak memiliki akun?{' '}
-          <Text style={styles.registerLink}>Daftar</Text>
+          <Text
+            style={styles.registerLink}
+            onPress={() => router.replace('./register_user')}
+          >
+            Daftar
+          </Text>
         </Text>
+
       </View>
     </SafeAreaView>
   );
@@ -97,12 +103,14 @@ const styles = StyleSheet.create({
   },
   greenHeader: {
     alignItems: 'center',
-    marginTop: 30,
+    marginTop: 0,
     marginBottom: -20,
     zIndex: 1,
   },
   headerTitle: {
-    marginTop:315,
+    textShadowOffset: {width: 0, height:5},
+    textShadowRadius: 7,
+    marginTop: 300,
     marginBottom:25,
     fontSize: 28,
     color: '#fff',
