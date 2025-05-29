@@ -113,8 +113,12 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     padding: 14,
     borderRadius: 10,
-    backgroundColor: Colors.berbagiDec.surface,
+    backgroundColor: Colors.berbagiDec.background,
     alignItems: 'center',
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
   },
   profileLeft: {
     flexDirection: 'row',
