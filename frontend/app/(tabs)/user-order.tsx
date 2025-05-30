@@ -1,48 +1,102 @@
-import React from 'react';
-import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity } from 'react-native';
-import { useNavigation } from 'expo-router';
-import { Colors } from '@/constants/Colors';
-import { Ionicons } from '@expo/vector-icons';
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  Image,
+  TouchableOpacity,
+} from "react-native";
+import { useNavigation } from "expo-router";
+import { Colors } from "@/constants/Colors";
+import { Ionicons } from "@expo/vector-icons";
+import Modal from "react-native-modal";
 
 export default function OrderUserPage() {
   const navigation = useNavigation();
+  const [isModalVisible, setModalVisible] = useState(false);
+
+  const handleConfirm = () => {
+    setModalVisible(false);
+  };
 
   return (
     <ScrollView style={styles.container}>
       <View style={styles.headerWrapper}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Ionicons name="arrow-back" size={24} color= "black" />
+          <Ionicons name="arrow-back" size={24} color="black" />
         </TouchableOpacity>
-        <Text style={styles.header} numberOfLines={1} ellipsizeMode="tail">Nasi Padang, Rumah Padang Sederhana</Text>
+        <Text style={styles.header} numberOfLines={1} ellipsizeMode="tail">
+          Nasi Padang, Rumah Padang Sederhana
+        </Text>
       </View>
 
       <Image
-        source={require('@/assets/images/food.jpg')}
+        source={require("@/assets/images/food.jpg")}
         style={styles.foodImage}
       />
 
       <View style={styles.contentWrapper}>
         <Text style={styles.foodTitle}>Nasi Padang</Text>
         <Text style={styles.description}>
-          Nikmati kelezatan masakan khas Minang dalam satu paket lengkap! Dalam paket ini, kamu akan mendapatkan nasi hangat dengan aneka lauk pilihan seperti rendang sapi empuk, ayam pop, telur balado, sayur nangka, sambal ijo, dan kerupuk renyah.
+          Nikmati kelezatan masakan khas Minang dalam satu paket lengkap! Dalam
+          paket ini, kamu akan mendapatkan nasi hangat dengan aneka lauk pilihan
+          seperti rendang sapi empuk, ayam pop, telur balado, sayur nangka,
+          sambal ijo, dan kerupuk renyah.
         </Text>
 
         <Text style={styles.sectionTitle}>Detail</Text>
         <Text style={styles.detailText}>Pengambilan Pukul 18:00 - 20:00</Text>
         <Text style={styles.restaurantName}>Rumah Padang Sederhana</Text>
         <Text style={styles.address}>
-          Jl. Tanjung Duren Raya No.54 1, RT.1/RW.4, Tj. Duren Utara, Kec. Grogol petamburan, Kota Jakarta Barat, Daerah Khusus Ibukota Jakarta 11470
+          Jl. Tanjung Duren Raya No.54 1, RT.1/RW.4, Tj. Duren Utara, Kec.
+          Grogol petamburan, Kota Jakarta Barat, Daerah Khusus Ibukota Jakarta
+          11470
         </Text>
 
         <Image
-          source={require('@/assets/images/map.jpg')}
+          source={require("@/assets/images/map.jpg")}
           style={styles.mapImage}
         />
 
-        <TouchableOpacity style={styles.orderButton}>
+        <TouchableOpacity
+          style={styles.orderButton}
+          onPress={() => setModalVisible(true)}
+        >
           <Text style={styles.orderButtonText}>PESAN</Text>
         </TouchableOpacity>
       </View>
+
+      <Modal
+        isVisible={isModalVisible}
+        onBackdropPress={() => setModalVisible(false)}
+        style={styles.modal}
+      >
+        <View style={styles.modalContent}>
+          <Text style={styles.restaurantName}>Rumah Padang Sederhana</Text>
+          <Text style={styles.address}>
+            Jl. Tanjung Duren Raya No.54 1, RT.1/RW.4, Tj. Duren Utara, Kec.
+            Grogol petamburan, Kota Jakarta Barat, Daerah Khusus Ibukota Jakarta
+            11470
+          </Text>
+          <View style={styles.confirmCard}>
+            <Image
+              source={require("@/assets/images/food.jpg")}
+              style={styles.confirmImage}
+            />
+            <View style={styles.confirmRight}>
+              <Text style={styles.foodTitle}>Nasi Padang</Text>
+              <Text style={{ color: "red" }}>Pengambilan Pukul 15:00</Text>
+            </View>
+          </View>
+          <TouchableOpacity
+            style={styles.confirmButton}
+            onPress={handleConfirm}
+          >
+            <Text style={styles.confirmButtonText}>KONFIRMASI</Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
     </ScrollView>
   );
 }
@@ -66,20 +120,19 @@ const styles = StyleSheet.create({
     color: Colors.berbagiDec.textPrimary,
   },
   foodImage: {
-    width: '85%',
+    width: "88%",
     marginHorizontal: 25,
     marginTop: 10,
     borderRadius: 20,
     height: 180,
-    resizeMode: 'cover',
   },
   contentWrapper: {
     paddingTop: 15,
-    paddingHorizontal: 27,
+    marginHorizontal: 25,
   },
   foodTitle: {
     fontSize: 22,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: Colors.berbagiDec.textPrimary,
     marginBottom: 6,
   },
@@ -91,7 +144,7 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 22,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: Colors.berbagiDec.textPrimary,
     marginBottom: 6,
   },
@@ -102,7 +155,7 @@ const styles = StyleSheet.create({
   },
   restaurantName: {
     fontSize: 14,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: Colors.berbagiDec.textPrimary,
     marginBottom: 2,
   },
@@ -110,9 +163,10 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: Colors.berbagiDec.textScondary,
     marginBottom: 12,
+    textAlign: "justify",
   },
   mapImage: {
-    width: '100%',
+    width: "100%",
     height: 180,
     borderRadius: 12,
     marginBottom: 20,
@@ -121,11 +175,47 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.berbagiDec.primary,
     paddingVertical: 14,
     borderRadius: 10,
-    alignItems: 'center',
+    alignItems: "center",
   },
   orderButtonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
+  },
+  modal: {
+    justifyContent: "flex-end",
+    margin: 0,
+  },
+  modalContent: {
+    backgroundColor: "white",
+    padding: 20,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+  },
+  confirmCard: {
+    flexDirection: "row",
+    marginTop: 10,
+    marginBottom: 20,
+    gap: 16,
+  },
+  confirmImage: {
+    width: 100,
+    height: 100,
+    borderRadius: 10,
+    marginRight: 12,
+  },
+  confirmRight: {
+    flexDirection: "column",
+  },
+  confirmButton: {
+    backgroundColor: Colors.berbagiDec.primary,
+    paddingVertical: 14,
+    borderRadius: 10,
+    alignItems: "center",
+  },
+  confirmButtonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
   },
 });
