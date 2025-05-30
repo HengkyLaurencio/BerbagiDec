@@ -40,6 +40,7 @@ export default function HistoryScreen() {
         <Ionicons
           name="arrow-back"
           size={24}
+          color= "Black"
           onPress={() => navigation.goBack()}
         />
         <Text style={styles.title}>Riwayat</Text>
@@ -90,6 +91,7 @@ const styles = StyleSheet.create({
      fontSize: 20,
      fontWeight: "bold",
      marginLeft: 8,
+     color: Colors.berbagiDec.textPrimary,
   },
   scroll: {
     flex: 1,

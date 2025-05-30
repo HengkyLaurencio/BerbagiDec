@@ -10,7 +10,7 @@ export default function ProfileScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Ionicons name="arrow-back" size={24} color={Colors.berbagiDec.textPrimary} onPress={() => navigation.goBack()} />
+        <Ionicons name="arrow-back" size={24} color= "Black" onPress={() => navigation.goBack()} />
         <Text style={styles.title}>Profil</Text>
       </View>
 
@@ -66,6 +66,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     marginLeft: 8,
+    color: Colors.berbagiDec.textPrimary,
   },
   profileSection: {
     flexDirection: 'row',
