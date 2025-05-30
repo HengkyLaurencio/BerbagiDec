@@ -8,8 +8,6 @@ const schema = require('./foodItem.validation');
 router.use(auth);
 
 
-// TODO: pake role.isPartner
-
 /**
  * @swagger
  * tags:
@@ -58,7 +56,7 @@ router.use(auth);
  *       400:
  *         description: Validation or store not found
  */
-router.post('/', validate(schema.create), controller.create);
+router.post('/', validate(schema.create), role.isAdmin, controller.create);
 
 /**
  * @swagger
@@ -102,7 +100,7 @@ router.post('/', validate(schema.create), controller.create);
  *       404:
  *         description: Food item not found
  */
-router.put('/:id', validate(schema.update), controller.update);
+router.put('/:id', validate(schema.update), role.isAdmin, controller.update);
 
 /**
  * @swagger
@@ -124,7 +122,7 @@ router.put('/:id', validate(schema.update), controller.update);
  *       404:
  *         description: Food item not found
  */
-router.delete('/:id', controller.remove);
+router.delete('/:id', role.isAdmin, controller.remove);
 
 /**
  * @swagger

@@ -5,6 +5,9 @@ exports.createStore = async (userId, data) => {
   const exists = await db.Store.findOne({ where: { userId } });
   if (exists) throw new AppError('You already have a store', 400);
 
+  const user = await db.User.findOne({ where: { id: userId } });
+  await user.update({role:'PARTNER'});
+
   return await db.Store.create({ ...data, userId });
 };
 
