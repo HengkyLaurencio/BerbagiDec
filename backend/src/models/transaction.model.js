@@ -19,7 +19,12 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.DATE,
       allowNull: false,
     },
-  });
+  },
+    {
+      timestamps: true,
+      underscored: true,
+      tableName: 'transactions',
+    });
 
   Transaction.associate = (models) => {
     Transaction.belongsTo(models.User, { foreignKey: 'id' });
