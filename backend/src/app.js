@@ -5,11 +5,13 @@ const AppError = require('./core/error');
 // const { swaggerUi, swaggerSpec } = require('./config/swagger');
 const swaggerSpec = require('./config/swagger');
 const redoc = require('redoc-express');
+const path = require('path');
 
 const authRoutes = require('./features/auth/auth.routes');
 const userRoutes = require('./features/user/user.routes');
 const storeRoutes = require('./features/store/store.routes');
 const foodItemRoutes = require('./features/foodItem/foodItem.routes');
+const uploadRoute = require('./features/upload/upload.route');
 
 const app = express();
 
@@ -48,6 +50,10 @@ app.use('/auth', authRoutes);
 app.use('/user', userRoutes);
 app.use('/store', storeRoutes);
 app.use('/food', foodItemRoutes);
+
+
+app.use('/images', express.static(path.join(__dirname, 'public/images')));
+app.use('/upload', uploadRoute);
 
 app.use((err, req, res, next) => {
   const status = err.statusCode || 500;
