@@ -18,6 +18,7 @@
     "express": "^5.1.0",
     "joi": "^17.13.3",
     "jsonwebtoken": "^9.0.2",
+    "multer": "^2.0.0",
     "pg": "^8.15.6",
     "pg-hstore": "^2.3.4",
     "redoc-express": "^2.1.0",
