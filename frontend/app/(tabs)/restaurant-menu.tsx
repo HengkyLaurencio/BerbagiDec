@@ -25,8 +25,11 @@ export default function RestaurantMenuPage() {
     <View style={styles.container}>
       <Text style={styles.pageTitle}>Menu Hari Ini</Text>
 
-      <TouchableOpacity style={styles.addButton}>
-        <Ionicons name="add" size={35} color={"black"} />
+      <TouchableOpacity
+        style={styles.addButton}
+        onPress={() => navigation.navigate('restaurant-addMenu')}
+      >
+        <Ionicons name="add" size={20} color={Colors.berbagiDec.textPrimary} />
         <Text style={styles.addButtonText}>Tambah Menu</Text>
       </TouchableOpacity>
 
