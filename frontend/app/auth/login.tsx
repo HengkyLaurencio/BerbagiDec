@@ -78,7 +78,7 @@ export default function Login() {
         </View>
 
         <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-          <Text style={styles.loginButtonText}>MASUK</Text>
+          <Text style={styles.loginButtonText} onPress={() => router.push('/(user)/user-home')}>MASUK</Text>
         </TouchableOpacity>
 
         <Text style={styles.registerText}>

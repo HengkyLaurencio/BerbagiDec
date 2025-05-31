@@ -9,13 +9,14 @@ import {
   Dimensions,
   StatusBar,
 } from "react-native";
-import { useRouter } from "expo-router";
+import { useNavigation } from 'expo-router';
 import { Ionicons } from "@expo/vector-icons";
+import { Colors } from '@/constants/Colors';
 
 const { width } = Dimensions.get("window");
 
 const DetailOrders = () => {
-  const router = useRouter();
+  const navigation = useNavigation();
 
   return (
     <View style={styles.container}>
@@ -23,13 +24,7 @@ const DetailOrders = () => {
 
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity
-          onPress={() => router.push("/(tabs)/orders")}
-          style={styles.backIcon}
-          activeOpacity={0.7}
-        >
-          <Ionicons name="arrow-back" size={24} color="#000" />
-        </TouchableOpacity>
+        <Ionicons name="arrow-back" size={24} color= "Black" onPress={() => navigation.goBack()} />
         <Text style={styles.orderInfo}>#001 Albert Suproanto</Text>
       </View>
 
@@ -70,15 +65,14 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 25,
-  },
-  backIcon: {
-    marginRight: 12,
+    marginHorizontal: 16,
+    marginBottom: 10,
   },
   orderInfo: {
-    fontSize: 18,
     fontWeight: "700",
-    color: "#000",
+    fontSize: 20,
+    marginLeft: 8,
+    color: Colors.berbagiDec.textPrimary,
   },
   orderBox: {
     backgroundColor: "#fff",

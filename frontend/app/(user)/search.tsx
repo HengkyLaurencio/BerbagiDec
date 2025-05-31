@@ -8,6 +8,7 @@ import {
   ScrollView,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { useNavigation } from 'expo-router';
 
 const tags = ["Padang", "Sate", "Bakso", "Ayam Bakar", "Nasi Goreng"];
 const dummyFood = {
@@ -18,17 +19,17 @@ const dummyFood = {
 };
 
 export default function SearchScreen() {
+    const navigation = useNavigation();
   return (
     <ScrollView style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <Ionicons name="arrow-back" size={24} />
+      <Ionicons name="arrow-back" size={24} color= "Black" onPress={() => navigation.goBack()} />
         <Text style={styles.headerTitle}>Pencarian</Text>
       </View>
 
       {/* Search Bar */}
       <View style={styles.searchContainer}>
-        <Ionicons name="search" size={20} color="gray" style={styles.searchIcon} />
         <TextInput placeholder="Search" style={styles.searchInput} />
       </View>
 

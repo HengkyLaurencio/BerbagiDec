@@ -10,20 +10,19 @@ import {
   StatusBar,
 } from "react-native";
 import FoodCard from "../../components/FoodCard";
-import { Avatar } from "react-native-paper";
 import { Colors } from '@/constants/Colors';
-import { useNavigation } from 'expo-router';
+import { useRouter} from 'expo-router';
 
 
 export default function Home() {
-  const navigation = useNavigation();
+  const router = useRouter();
   return (
     
     <ScrollView style={styles.container}>
       <StatusBar barStyle="dark-content"/>
       <View style={styles.header}>
         <Text style={styles.greeting}>Selamat Pagi, Albert</Text>
-        <TouchableOpacity onPress={() => navigation.navigate('profile')}>
+        <TouchableOpacity onPress={() => router.push('/(user)/user-profile')}>
           <Image
             source={require('@/assets/images/profile.jpeg')}
             style={styles.avatar}
@@ -31,7 +30,11 @@ export default function Home() {
         </TouchableOpacity>
       </View>
       <View style={styles.searchContainer}>
-        <TextInput placeholder="Search" style={styles.searchInput} />
+        <TextInput
+          placeholder="Search"
+          style={styles.searchInput}
+          onFocus={() => router.push('/search')} 
+        />
       </View>
 
       <View style={styles.menuContainer}>
@@ -55,40 +58,52 @@ export default function Home() {
 
       <Text style={styles.sectionTitle}>Rekomendasi</Text>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.horizontalScroll}>
-        <FoodCard
-          title="Nasi Padang"
-          subtitle="Rumah Padang Sederhana"
-          image={require("../../assets/images/food.jpg")}
-        />
-        <FoodCard
-          title="Nasi Goreng"
-          subtitle="Warung Mas Rudi"
-          image={require("../../assets/images/food.jpg")}
-        />
-        <FoodCard
-          title="Mie Ayam"
-          subtitle="Bakmi Enak"
-          image={require("../../assets/images/food.jpg")}
-        />
+        <TouchableOpacity onPress={() => router.push('/user-order')}>
+          <FoodCard
+            title="Nasi Padang"
+            subtitle="Rumah Padang Sederhana"
+            image={require("../../assets/images/foodHome.jpg")}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => router.push('/user-order')}>
+          <FoodCard
+            title="Nasi Goreng"
+            subtitle="Warung Mas Rudi"
+            image={require("../../assets/images/foodHome.jpg")}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => router.push('/user-order')}>
+          <FoodCard
+            title="Mie Ayam"
+            subtitle="Bakmi Enak"
+            image={require("../../assets/images/foodHome.jpg")}
+          />
+        </TouchableOpacity>
       </ScrollView>
 
       <Text style={styles.sectionTitle}>Terdekat</Text>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.horizontalScroll}>
-        <FoodCard
-          title="Nasi Padang"
-          subtitle="Rumah Padang Sederhana"
-          image={require("../../assets/images/food.jpg")}
-        />
-        <FoodCard
-          title="Ayam Geprek"
-          subtitle="Geprek Juara"
-          image={require("../../assets/images/food.jpg")}
-        />
-        <FoodCard
-          title="Soto Ayam"
-          subtitle="Soto Pak Gino"
-          image={require("../../assets/images/food.jpg")}
-        />
+        <TouchableOpacity onPress={() => router.push('/user-order')}>
+          <FoodCard
+            title="Nasi Padang"
+            subtitle="Rumah Padang Sederhana"
+            image={require("../../assets/images/foodHome.jpg")}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => router.push('/user-order')}>
+          <FoodCard
+            title="Ayam Geprek"
+            subtitle="Geprek Juara"
+            image={require("../../assets/images/food.jpg")}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => router.push('/user-order')}>
+          <FoodCard
+            title="Soto Ayam"
+            subtitle="Soto Pak Gino"
+            image={require("../../assets/images/food.jpg")}
+          />
+        </TouchableOpacity>
       </ScrollView>
     </ScrollView>
   );

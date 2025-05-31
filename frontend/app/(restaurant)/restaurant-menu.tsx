@@ -4,6 +4,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '@/constants/Colors';
+import { useRouter } from 'expo-router';
 
 const menuData = [
   {
@@ -21,14 +22,14 @@ const menuData = [
 ];
 
 export default function RestaurantMenuPage() {
+  const router = useRouter();
   return (
     <View style={styles.container}>
       <Text style={styles.pageTitle}>Menu Hari Ini</Text>
 
       <TouchableOpacity
         style={styles.addButton}
-        onPress={() => navigation.navigate('restaurant-addMenu')}
-      >
+        onPress={() => router.push('/restaurantFeatures/restaurant-addMenu')}>
         <Ionicons name="add" size={20} color={Colors.berbagiDec.textPrimary} />
         <Text style={styles.addButtonText}>Tambah Menu</Text>
       </TouchableOpacity>

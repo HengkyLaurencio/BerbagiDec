@@ -94,7 +94,7 @@ const Onboarding = () => {
             {currentIndex === slides.length - 1 ? 'Start' : 'Next'}
           </Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={handleSkip}>
+        <TouchableOpacity onPress={() => router.push('/auth/login')}>
           <Text style={styles.skipText}>Skip</Text>
         </TouchableOpacity>
       </View>

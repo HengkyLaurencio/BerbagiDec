@@ -7,9 +7,10 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { router, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 
 export default function OrdersScreen() {
+  const router = useRouter();
   const orders = [
     {
       id: "#001",
@@ -71,7 +72,7 @@ export default function OrdersScreen() {
         <TouchableOpacity
           key={index}
           style={styles.card}
-          onPress={() => router.push("/detailOrders")}
+          onPress={() => router.push("/restaurantFeatures/detailOrders")}
           activeOpacity={0.8}
         >
           {/* Top Row: ID, Name, and Time */}
