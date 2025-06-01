@@ -17,7 +17,7 @@ router.use(auth);
 
 /**
  * @swagger
- * /food-items:
+ * /food:
  *   post:
  *     summary: Create a food item (partner only)
  *     tags: [FoodItems]
@@ -43,8 +43,6 @@ router.use(auth);
  *                 type: integer
  *               price:
  *                 type: number
- *               originalPrice:
- *                 type: number
  *               availableUntil:
  *                 type: string
  *                 format: date-time
@@ -56,11 +54,11 @@ router.use(auth);
  *       400:
  *         description: Validation or store not found
  */
-router.post('/', validate(schema.create), role.isAdmin, controller.create);
+router.post('/', validate(schema.create), role.isPartner, controller.create);
 
 /**
  * @swagger
- * /food-items/{id}:
+ * /food/{id}:
  *   put:
  *     summary: Update a food item by ID (partner only)
  *     tags: [FoodItems]
@@ -87,8 +85,6 @@ router.post('/', validate(schema.create), role.isAdmin, controller.create);
  *                 type: integer
  *               price:
  *                 type: number
- *               originalPrice:
- *                 type: number
  *               availableUntil:
  *                 type: string
  *                 format: date-time
@@ -100,11 +96,11 @@ router.post('/', validate(schema.create), role.isAdmin, controller.create);
  *       404:
  *         description: Food item not found
  */
-router.put('/:id', validate(schema.update), role.isAdmin, controller.update);
+router.put('/:id', validate(schema.update), role.isPartner, controller.update);
 
 /**
  * @swagger
- * /food-items/{id}:
+ * /food/{id}:
  *   delete:
  *     summary: Delete a food item by ID (partner only)
  *     tags: [FoodItems]
@@ -122,11 +118,11 @@ router.put('/:id', validate(schema.update), role.isAdmin, controller.update);
  *       404:
  *         description: Food item not found
  */
-router.delete('/:id', role.isAdmin, controller.remove);
+router.delete('/:id', role.isPartner    , controller.remove);
 
 /**
  * @swagger
- * /food-items:
+ * /food:
  *   get:
  *     summary: Get all food items
  *     tags: [FoodItems]
@@ -140,7 +136,7 @@ router.get('/', controller.getAll);
 
 /**
  * @swagger
- * /food-items/{id}:
+ * /food/{id}:
  *   get:
  *     summary: Get a food item by ID
  *     tags: [FoodItems]

@@ -19,14 +19,14 @@ exports.createTransaction = async (userId, data) => {
 exports.getUserTransactions = async (userId) => {
   return await db.Transaction.findAll({
     where: { userId },
-    include: ['FoodItem'],
+    include: {model: db.FoodItem},
     order: [['createdAt', 'DESC']],
   });
 };
 
 exports.getAllTransactions = async () => {
   return await db.Transaction.findAll({
-    include: ['User', 'FoodItem'],
+    include: {model: db.User , model: db.FoodItem},
     order: [['createdAt', 'DESC']],
   });
 };
