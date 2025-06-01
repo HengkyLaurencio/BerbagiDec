@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { View, Text, StyleSheet, Image, Dimensions, FlatList, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const { width } = Dimensions.get('window');
 
@@ -41,12 +42,8 @@ const Onboarding = () => {
       flatListRef.current?.scrollToIndex({ index: currentIndex + 1 });
       setCurrentIndex(currentIndex + 1);
     } else {
-      router.replace('/');
+      router.replace('/auth/login');
     }
-  };
-
-  const handleSkip = () => {
-    router.replace('/');
   };
 
   const renderItem = ({ item }: any) => (
@@ -72,7 +69,7 @@ const Onboarding = () => {
   );
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>  
       <FlatList
         ref={flatListRef}
         data={slides}
@@ -99,7 +96,7 @@ const Onboarding = () => {
         </TouchableOpacity>
       </View>
 
-    </View>
+    </SafeAreaView>
   );
 };
 
