@@ -98,14 +98,14 @@ export default function Register() {
 
         <Text style={styles.loginRedirectText}>
           Sudah punya akun?{' '}
-          <Text style={styles.loginLink} onPress={() => router.replace('/login')}>
+          <Text style={styles.loginLink} onPress={() => router.replace('/auth/login')}>
             Masuk
           </Text>
         </Text>
 
         <Text style={styles.registerText}>
             Daftar sebagai restoran?{' '}
-            <Text style={styles.registerLink} onPress={() => router.replace('/register_rest')}>Klik di sini</Text>
+            <Text style={styles.registerLink} onPress={() => router.replace('/auth/register_rest')}>Klik di sini</Text>
         </Text>
       </View>
     </SafeAreaView>
