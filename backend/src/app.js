@@ -11,6 +11,7 @@ const authRoutes = require('./features/auth/auth.routes');
 const userRoutes = require('./features/user/user.routes');
 const storeRoutes = require('./features/store/store.routes');
 const foodItemRoutes = require('./features/foodItem/foodItem.routes');
+const transactionsRoutes = require('./features/transaction/transaction.routes');
 const uploadRoute = require('./features/upload/upload.route');
 
 const app = express();
@@ -50,6 +51,7 @@ app.use('/auth', authRoutes);
 app.use('/user', userRoutes);
 app.use('/store', storeRoutes);
 app.use('/food', foodItemRoutes);
+app.use('/transactions', transactionsRoutes);
 
 
 app.use('/images', express.static(path.join(__dirname, 'public/images')));
