@@ -12,19 +12,51 @@ import { Checkbox } from 'react-native-paper';
 import { useRouter } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
 
+import { Alert } from 'react-native';
+import { useAuth } from '../../contexts/AuthContext';
+
 
 export default function Login() {
   const router = useRouter();
+  const { login } = useAuth();
+  
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
 
-  const handleLogin = () => {
-    
-    console.log('Remember Me:', rememberMe);
-    // Handle login logic here
-    console.log('Login pressed');
+  const handleLogin = async () => {
+    try {
+      const response = await fetch('http://hengkylaurencio.cloud:3000/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.message || 'Login gagal');
+      }
+
+      const { token, user } = result.data;
+      login(token, user); // Simpan ke context
+
+      Alert.alert('Sukses', 'Login berhasil!');
+
+      // Redirect sesuai role
+      if (user.role === 'CUSTOMER') {
+        router.replace('/(user)/user-home');
+      } else if (user.role === 'PARTNER') {
+        router.replace('/(restaurant)/restaurant-home');
+      } else {
+        router.replace('/');
+      }
+    } catch (error: any) {
+      Alert.alert('Error', error.message || 'Terjadi kesalahan');
+    }
   };
 
   return (
@@ -78,7 +110,7 @@ export default function Login() {
         </View>
 
         <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-          <Text style={styles.loginButtonText} onPress={() => router.push('/(user)/user-home')}>MASUK</Text>
+        <Text style={styles.loginButtonText}>MASUK</Text>
         </TouchableOpacity>
 
         <Text style={styles.registerText}>

@@ -107,14 +107,14 @@ export default function RegisterRestoran() {
 
         <Text style={styles.loginRedirectText}>
           Sudah punya akun?{' '}
-          <Text style={styles.loginLink} onPress={() => router.replace('/login')}>
+          <Text style={styles.loginLink} onPress={() => router.replace('/auth/login')}>
             Masuk
           </Text>
         </Text>
 
         <Text style={styles.registerText}>
           Daftar sebagai pengguna?{' '}
-          <Text style={styles.registerLink} onPress={() => router.replace('/register_user')}>
+          <Text style={styles.registerLink} onPress={() => router.replace('/auth/register_user')}>
             Klik di sini
           </Text>
         </Text>

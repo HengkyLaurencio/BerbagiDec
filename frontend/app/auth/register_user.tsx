@@ -6,13 +6,16 @@ import {
   TouchableOpacity,
   StyleSheet,
   SafeAreaView,
+  Alert,
 } from 'react-native';
-
 import { Feather } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import { useAuth } from '../../contexts/AuthContext';
 
 export default function Register() {
   const router = useRouter();
+  const { login } = useAuth();
+
   const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -20,17 +23,53 @@ export default function Register() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const handleRegister = () => {
-    // Handle register logic here
-    console.log('Register pressed');
-  };
+  const handleRegister = async () => {
+    if (password !== confirmPassword) {
+      Alert.alert('Error', 'Password tidak cocok');
+      return;
+    }
+  
+    try {
+      const response = await fetch('http://hengkylaurencio.cloud:3000/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email,
+          password,
+          name: username,
+          phoneNumber: '08123456789',
+        }),
+      });
+  
+      const result = await response.json();
+  
+      if (!response.ok) {
+        throw new Error(result.message || 'Registrasi gagal');
+      }
+  
+      const { token, user } = result.data;
+      login(token, user);
+  
+      Alert.alert('Sukses', 'Registrasi berhasil!');
+  
+      // Redirect berdasarkan role
+      if (user.role === 'CUSTOMER') {
+        router.replace('/(user)/user-home');
+      } else if (user.role === 'PARTNER') {
+        router.replace('/(restaurant)/restaurant-home');
+      } else {
+        router.replace('/');
+      }
+  
+    } catch (error: any) {
+      Alert.alert('Error', error.message);
+    }
+  };  
 
   return (
     <SafeAreaView style={styles.container}>
-      <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-        <Feather name="arrow-left" size={24} color="white" />
-      </TouchableOpacity>
-
       <View style={styles.greenHeader}>
         <Text style={styles.headerTitle}>Daftar Akun</Text>
       </View>
@@ -65,11 +104,7 @@ export default function Register() {
             onChangeText={setPassword}
           />
           <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-            <Feather
-              name={showPassword ? 'eye-off' : 'eye'}
-              size={20}
-              color="#8c94a3"
-            />
+            <Feather name={showPassword ? 'eye-off' : 'eye'} size={20} color="#8c94a3" />
           </TouchableOpacity>
         </View>
 
@@ -84,11 +119,7 @@ export default function Register() {
             onChangeText={setConfirmPassword}
           />
           <TouchableOpacity onPress={() => setShowConfirmPassword(!showConfirmPassword)}>
-            <Feather
-              name={showConfirmPassword ? 'eye-off' : 'eye'}
-              size={20}
-              color="#8c94a3"
-            />
+            <Feather name={showConfirmPassword ? 'eye-off' : 'eye'} size={20} color="#8c94a3" />
           </TouchableOpacity>
         </View>
 
@@ -102,11 +133,6 @@ export default function Register() {
             Masuk
           </Text>
         </Text>
-
-        <Text style={styles.registerText}>
-            Daftar sebagai restoran?{' '}
-            <Text style={styles.registerLink} onPress={() => router.replace('/auth/register_rest')}>Klik di sini</Text>
-        </Text>
       </View>
     </SafeAreaView>
   );
@@ -117,12 +143,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#2e7d32',
   },
-  backButton: {
-    position: 'absolute',
-    top: 50,
-    left: 25,
-    zIndex: 10,
-  },
   greenHeader: {
     alignItems: 'center',
     marginTop: 20,
@@ -130,7 +150,7 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   headerTitle: {
-    textShadowOffset: {width: 0, height:5},
+    textShadowOffset: { width: 0, height: 5 },
     textShadowRadius: 7,
     marginTop: 125,
     marginBottom: 25,
@@ -187,17 +207,6 @@ const styles = StyleSheet.create({
     color: '#666',
   },
   loginLink: {
-    color: '#2e7d32',
-    fontWeight: 'bold',
-  },
-
-  registerText: {
-    textAlign: 'center',
-    marginTop: 12,
-    color: '#666',
-  },
-
-  registerLink: {
     color: '#2e7d32',
     fontWeight: 'bold',
   },
