@@ -1,28 +1,59 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
+import { useCallback } from 'react';
 import {
-  View, Text, StyleSheet, ScrollView, TouchableOpacity, Image,
+  View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, ActivityIndicator,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '@/constants/Colors';
 import { useRouter } from 'expo-router';
 
-const menuData = [
-  {
-    id: 1,
-    name: 'Nasi Padang',
-    image: require('@/assets/images/food.jpg'),
-    stock: '5/10',
-  },
-  {
-    id: 2,
-    name: 'Nasi Padang',
-    image: require('@/assets/images/food.jpg'),
-    stock: '5/10',
-  },
-];
+import { useAuth } from '@/contexts/AuthContext';
+
+interface MenuItem {
+  id: number;
+  name: string;
+  sold: number;
+  quantity: number;
+  imageUrl: string;
+}
 
 export default function RestaurantMenuPage() {
+  const [menuData, setMenuData] = useState<MenuItem[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
   const router = useRouter();
+
+  const { token } = useAuth();
+
+
+  const fetchMenu = async () => {
+    if (!token) return;
+    try {
+      const res = await fetch('http://hengkylaurencio.cloud:3000/food/me', {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      const json = await res.json();
+      if (json.status === 'success') {
+        setMenuData(json.data);
+      }
+    } catch (err) {
+      console.error('Gagal mengambil menu:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchMenu();
+    }, [token])
+  );
+
   return (
     <View style={styles.container}>
       <Text style={styles.pageTitle}>Menu Hari Ini</Text>
@@ -34,17 +65,24 @@ export default function RestaurantMenuPage() {
         <Text style={styles.addButtonText}>Tambah Menu</Text>
       </TouchableOpacity>
 
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
-        {menuData.map((item) => (
-          <View key={item.id} style={styles.card}>
-            <Image source={item.image} style={styles.image} />
-            <View style={styles.cardText}>
-              <Text style={styles.menuTitle}>{item.name}</Text>
-              <Text style={styles.menuStock}>{item.stock}</Text>
+      {loading ? (
+        <ActivityIndicator size="large" color={Colors.berbagiDec.primary} />
+      ) : (
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+          {menuData.map((item) => (
+            <View key={item.id} style={styles.card}>
+              <Image
+                source={{ uri: `${item.imageUrl}` }}
+                style={styles.image}
+              />
+              <View style={styles.cardText}>
+                <Text style={styles.menuTitle}>{item.name}</Text>
+                <Text style={styles.menuStock}>{item.quantity - item.sold}/{item.quantity} stok tersedia</Text>
+              </View>
             </View>
-          </View>
-        ))}
-      </ScrollView>
+          ))}
+        </ScrollView>
+      )}
     </View>
   );
 }
@@ -82,8 +120,8 @@ const styles = StyleSheet.create({
     marginBottom: 18,
     overflow: 'hidden',
     shadowColor: '#000',
-    shadowOpacity: 0.8,
-    shadowRadius: 5,
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
     elevation: 3,
     marginHorizontal: 6,
   },

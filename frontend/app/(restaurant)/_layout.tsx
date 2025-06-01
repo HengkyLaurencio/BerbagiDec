@@ -4,28 +4,28 @@ import { Platform } from "react-native";
 
 import { HapticTab } from "@/components/HapticTab";
 import { IconSymbol } from "@/components/ui/IconSymbol";
-import TabBarBackground from "@/components/ui/TabBarBackground";
 import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
-import { white } from "react-native-paper/lib/typescript/styles/themes/v2/colors";
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
+  const theme = Colors.berbagiDec;
 
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
         headerShown: false,
         tabBarButton: HapticTab,
-        tabBarBackground: TabBarBackground,
-        tabBarStyle: Platform.select({
-          ios: {
-            // Use a transparent background on iOS to show the blur effect
-            position: "absolute",
-          },
-          default: {},
-        }),
+        tabBarActiveTintColor: "#FFFFFF", // ikon & teks aktif putih
+        tabBarInactiveTintColor: "#FFFFFF", // ikon & teks inaktif juga putih
+        tabBarStyle: {
+          backgroundColor: theme.primary, // latar hijau (#2E7D32)
+          borderTopWidth: 0,
+          height: 60,
+          position: Platform.OS === "ios" ? "absolute" : "relative",
+        },
+        tabBarLabelStyle: {
+          fontWeight: "600",
+        },
       }}
     >
       <Tabs.Screen
