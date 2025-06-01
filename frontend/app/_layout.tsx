@@ -21,12 +21,11 @@ export default function RootLayout() {
 
   return (
     <AuthProvider>
+    <StatusBar/>
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
         <Stack screenOptions={{ headerShown: false }}>
           <Stack.Screen name="index" />
-          <Stack.Screen name="(user)/user-home" />
-          <Stack.Screen name="(user)" />
-          <Stack.Screen name="(restaurant)" />
+          <Stack.Screen name="auth/login" />
           <Stack.Screen name="+not-found" />
         </Stack>
       <StatusBar style="auto" />

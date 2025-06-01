@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { View, Text, StyleSheet, Image, Dimensions, FlatList, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Image, Dimensions, FlatList, TouchableOpacity, StatusBar } from 'react-native';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -70,6 +70,7 @@ const Onboarding = () => {
 
   return (
     <SafeAreaView style={styles.container}>  
+    <StatusBar/>
       <FlatList
         ref={flatListRef}
         data={slides}
