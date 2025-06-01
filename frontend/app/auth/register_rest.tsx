@@ -6,119 +6,149 @@ import {
   TouchableOpacity,
   StyleSheet,
   SafeAreaView,
+  ScrollView,
+  Alert,
 } from 'react-native';
-
 import { Feather } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function RegisterRestoran() {
   const router = useRouter();
-  const [email, setEmail] = useState('');
   const [restaurantName, setRestaurantName] = useState('');
+  const [restaurantDescription, setRestaurantDescription] = useState('');
   const [restaurantAddress, setRestaurantAddress] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [openTime, setOpenTime] = useState('08:00');
+  const [closeTime, setCloseTime] = useState('17:00');
+  const [latitude, setLatitude] = useState('');
+  const [longitude, setLongitude] = useState('');
+  const { token } = useAuth();
 
-  const handleRegister = () => {
-    // Logic untuk register restoran
-    console.log('Register Restoran pressed');
+  const handleRegister = async () => {
+    if (!token) return;
+
+    if (!restaurantName || !restaurantDescription || !restaurantAddress || !openTime || !closeTime) {
+      Alert.alert('Peringatan', 'Semua field wajib diisi.');
+      return;
+    }
+
+    try {
+      const response = await fetch('http://hengkylaurencio.cloud:3000/store', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          storeName: restaurantName,
+          storeDescription: restaurantDescription,
+          storeAddress: restaurantAddress,
+          latitude: 0,
+          longitude: 0,
+          openTime,
+          closeTime,
+        }),
+      });
+  
+      const contentType = response.headers.get('content-type');
+      if (!response.ok) {
+        const text = await response.text(); // bisa HTML kalau error
+        if (contentType?.includes('application/json')) {
+          const errJson = JSON.parse(text);
+          Alert.alert('Gagal', errJson.message || 'Gagal mendaftarkan restoran.');
+        } else {
+          console.log('Error response:', text);
+          Alert.alert('Gagal', 'Server mengembalikan HTML/error page.');
+        }
+        return;
+      }
+  
+      Alert.alert('Berhasil', 'Restoran berhasil didaftarkan!', [
+        { text: 'OK', onPress: () => router.replace('/auth/login') },
+      ]);
+    } catch (error) {
+      console.error('Catch error:', error);
+      Alert.alert('Error', 'Terjadi kesalahan saat mendaftar.');
+    }
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-        <Feather name="arrow-left" size={24} color="white" />
-      </TouchableOpacity>
-
-      <View style={styles.greenHeader}>
-        <Text style={styles.headerTitle}>Daftar Restoran</Text>
-      </View>
-
-      <View style={styles.formContainer}>
-        <Text style={styles.label}>EMAIL</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="restoran@gmail.com"
-          placeholderTextColor="#aaa"
-          value={email}
-          onChangeText={setEmail}
-        />
-
-        <Text style={[styles.label, { marginTop: 20 }]}>NAMA RESTORAN</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Contoh: Warteg Sederhana"
-          placeholderTextColor="#aaa"
-          value={restaurantName}
-          onChangeText={setRestaurantName}
-        />
-        <Text style={[styles.label, { marginTop: 20 }]}>ALAMAT RESTORAN</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Contoh: Jl. Tanjung Duren Barat No. 1"
-          placeholderTextColor="#aaa"
-          value={restaurantAddress}
-          onChangeText={setRestaurantAddress}
-        />
-
-        <Text style={[styles.label, { marginTop: 20 }]}>PASSWORD</Text>
-        <View style={styles.passwordBox}>
-          <TextInput
-            style={styles.passwordInput}
-            placeholder="***********"
-            placeholderTextColor="#8c94a3"
-            secureTextEntry={!showPassword}
-            value={password}
-            onChangeText={setPassword}
-          />
-          <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-            <Feather
-              name={showPassword ? 'eye-off' : 'eye'}
-              size={20}
-              color="#8c94a3"
-            />
-          </TouchableOpacity>
-        </View>
-
-        <Text style={[styles.label, { marginTop: 20 }]}>KONFIRMASI PASSWORD</Text>
-        <View style={styles.passwordBox}>
-          <TextInput
-            style={styles.passwordInput}
-            placeholder="***********"
-            placeholderTextColor="#8c94a3"
-            secureTextEntry={!showConfirmPassword}
-            value={confirmPassword}
-            onChangeText={setConfirmPassword}
-          />
-          <TouchableOpacity onPress={() => setShowConfirmPassword(!showConfirmPassword)}>
-            <Feather
-              name={showConfirmPassword ? 'eye-off' : 'eye'}
-              size={20}
-              color="#8c94a3"
-            />
-          </TouchableOpacity>
-        </View>
-
-        <TouchableOpacity style={styles.registerButton} onPress={handleRegister}>
-          <Text style={styles.registerButtonText}>DAFTAR</Text>
+      <ScrollView>
+        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+          <Feather name="arrow-left" size={24} color="white" />
         </TouchableOpacity>
 
-        <Text style={styles.loginRedirectText}>
-          Sudah punya akun?{' '}
-          <Text style={styles.loginLink} onPress={() => router.replace('/auth/login')}>
-            Masuk
-          </Text>
-        </Text>
+        <View style={styles.greenHeader}>
+          <Text style={styles.headerTitle}>Daftar Restoran</Text>
+        </View>
 
-        <Text style={styles.registerText}>
-          Daftar sebagai pengguna?{' '}
-          <Text style={styles.registerLink} onPress={() => router.replace('/auth/register_user')}>
-            Klik di sini
-          </Text>
-        </Text>
-      </View>
+        <View style={styles.formContainer}>
+          <Text style={styles.label}>Nama Restoran</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Contoh: Warteg Sederhana"
+            value={restaurantName}
+            onChangeText={setRestaurantName}
+          />
+
+          <Text style={[styles.label, { marginTop: 20 }]}>Deskripsi</Text>
+          <TextInput
+            style={[styles.input, { height: 100, textAlignVertical: 'top' }]}
+            placeholder="Contoh: Menyediakan makanan rumahan murah meriah"
+            multiline
+            value={restaurantDescription}
+            onChangeText={setRestaurantDescription}
+          />
+
+          <Text style={[styles.label, { marginTop: 20 }]}>Alamat</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Contoh: Jl. Tanjung Duren Barat No. 1"
+            value={restaurantAddress}
+            onChangeText={setRestaurantAddress}
+          />
+
+          <Text style={[styles.label, { marginTop: 20 }]}>Jam Buka</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="08:00"
+            value={openTime}
+            onChangeText={setOpenTime}
+          />
+
+          <Text style={[styles.label, { marginTop: 20 }]}>Jam Tutup</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="17:00"
+            value={closeTime}
+            onChangeText={setCloseTime}
+          />
+
+          {/* Untuk saat ini manual dulu */}
+          <Text style={[styles.label, { marginTop: 20 }]}>Latitude</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Contoh: -6.200000"
+            keyboardType="numeric"
+            value={latitude}
+            onChangeText={setLatitude}
+          />
+
+          <Text style={[styles.label, { marginTop: 20 }]}>Longitude</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Contoh: 106.816666"
+            keyboardType="numeric"
+            value={longitude}
+            onChangeText={setLongitude}
+          />
+
+          <TouchableOpacity style={styles.registerButton} onPress={handleRegister}>
+            <Text style={styles.registerButtonText}>Daftar</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -130,22 +160,22 @@ const styles = StyleSheet.create({
   },
   backButton: {
     position: 'absolute',
-    top: 50,
+    top: 25,
     left: 25,
     zIndex: 10,
   },
   greenHeader: {
     alignItems: 'center',
-    marginBottom:5,
+    marginBottom: 5,
     zIndex: 1,
   },
   headerTitle: {
-    textShadowOffset: { width: 0, height: 5 },
-    textShadowRadius: 7,
-    marginTop: 85,
+    marginTop: 100,
     fontSize: 28,
     color: '#fff',
     fontWeight: 'bold',
+    textShadowOffset: { width: 0, height: 5 },
+    textShadowRadius: 7,
   },
   formContainer: {
     flex: 1,
@@ -161,23 +191,9 @@ const styles = StyleSheet.create({
   },
   input: {
     backgroundColor: '#f1f4f9',
-    padding: 20,
+    padding: 16,
     borderRadius: 12,
     color: '#000',
-  },
-  passwordBox: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#f1f5f9',
-    borderRadius: 12,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    marginTop: 5,
-  },
-  passwordInput: {
-    flex: 1,
-    fontSize: 16,
-    color: '#1e293b',
   },
   registerButton: {
     backgroundColor: '#2e7d32',
@@ -188,24 +204,6 @@ const styles = StyleSheet.create({
   },
   registerButtonText: {
     color: '#fff',
-    fontWeight: 'bold',
-  },
-  loginRedirectText: {
-    textAlign: 'center',
-    marginTop: 20,
-    color: '#666',
-  },
-  loginLink: {
-    color: '#2e7d32',
-    fontWeight: 'bold',
-  },
-  registerText: {
-    textAlign: 'center',
-    marginTop: 12,
-    color: '#666',
-  },
-  registerLink: {
-    color: '#2e7d32',
     fontWeight: 'bold',
   },
 });
