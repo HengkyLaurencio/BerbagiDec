@@ -43,8 +43,6 @@ router.use(auth);
  *                 type: integer
  *               price:
  *                 type: number
- *               originalPrice:
- *                 type: number
  *               availableUntil:
  *                 type: string
  *                 format: date-time
@@ -86,8 +84,6 @@ router.post('/', validate(schema.create), role.isAdmin, controller.create);
  *               quantity:
  *                 type: integer
  *               price:
- *                 type: number
- *               originalPrice:
  *                 type: number
  *               availableUntil:
  *                 type: string
