@@ -6,6 +6,7 @@ module.exports = (sequelize, DataTypes) => {
       storeId: DataTypes.INTEGER,
       name: DataTypes.STRING,
       description: DataTypes.TEXT,
+      sold: {type: DataTypes.INTEGER, defaultValue: 0},
       quantity: DataTypes.INTEGER,
       price: DataTypes.DECIMAL(10, 2),
       availableUntil: DataTypes.DATE,
