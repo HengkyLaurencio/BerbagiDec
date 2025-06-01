@@ -19,6 +19,15 @@ exports.getAll = async (req, res) => {
   }
 };
 
+exports.getAllFoodByStore = async (req, res) => {
+  try {
+    const result = await service.findAllByStore(req.user.id);
+    return success(res, result);
+  } catch (err) {
+    return error(res, err);
+  }
+};
+
 exports.getById = async (req, res) => {
   try {
     const result = await service.findById(+req.params.id);

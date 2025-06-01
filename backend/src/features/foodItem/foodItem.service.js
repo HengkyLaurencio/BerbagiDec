@@ -12,6 +12,15 @@ exports.findAll = async () => {
   return await db.FoodItem.findAll({ include: db.Store });
 };
 
+exports.findAllByStore = async (userId) => {
+  return await db.FoodItem.findAll({
+    include: {
+      model: db.Store,
+      where: { userId },
+    },
+  });
+};
+
 exports.findById = async (id) => {
   const item = await db.FoodItem.findByPk(id, { include: db.Store });
   if (!item) throw new AppError('Food item not found', 404);

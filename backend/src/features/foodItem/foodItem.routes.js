@@ -39,6 +39,8 @@ router.use(auth);
  *                 type: string
  *               description:
  *                 type: string
+ *               sold:
+ *                  type: integer
  *               quantity:
  *                 type: integer
  *               price:
@@ -55,6 +57,8 @@ router.use(auth);
  *         description: Validation or store not found
  */
 router.post('/', validate(schema.create), role.isPartner, controller.create);
+
+router.get('/me', validate(schema.create), role.isPartner, controller.getAllFoodByStore);
 
 /**
  * @swagger
@@ -81,6 +85,8 @@ router.post('/', validate(schema.create), role.isPartner, controller.create);
  *                 type: string
  *               description:
  *                 type: string
+ *               sold:
+ *                  type: integer
  *               quantity:
  *                 type: integer
  *               price:
