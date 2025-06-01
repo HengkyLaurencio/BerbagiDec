@@ -3,18 +3,47 @@ const AppError = require('../../core/error');
 
 exports.createTransaction = async (userId, data) => {
   const foodItem = await db.FoodItem.findByPk(data.foodItemId);
-  if (!foodItem) throw new AppError('Food item not found', 404);
 
-  const total = data.quantity * foodItem.price;
+  if (!foodItem) {
+    throw new AppError('Food item not found', 404);
+  }
 
-  return await db.Transaction.create({
-    userId,
-    foodItemId: data.foodItemId,
-    quantity: data.quantity,
-    pickupTime: data.pickupTime,
-    totalPrice: total,
+  const requestedQty = data.quantity;
+  const availableQty = foodItem.quantity - foodItem.sold;
+
+  if (requestedQty > availableQty) {
+    throw new AppError('Jumlah melebihi stok tersedia', 400);
+  }
+
+  // Hitung total harga
+  const total = requestedQty * foodItem.price;
+
+  // Gunakan transaction untuk atomicity
+  const sequelize = db.sequelize;
+
+  return await sequelize.transaction(async (t) => {
+    // Update sold count
+    await foodItem.update(
+      { sold: foodItem.sold + requestedQty },
+      { transaction: t }
+    );
+
+    // Create transaction record
+    const transaction = await db.Transaction.create(
+      {
+        userId,
+        foodItemId: data.foodItemId,
+        quantity: requestedQty,
+        pickupTime: data.pickupTime,
+        totalPrice: total,
+      },
+      { transaction: t }
+    );
+
+    return transaction;
   });
 };
+
 
 exports.getUserTransactions = async (userId) => {
   return await db.Transaction.findAll({
