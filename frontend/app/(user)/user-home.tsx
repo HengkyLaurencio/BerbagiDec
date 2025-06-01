@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -7,21 +7,51 @@ import {
   ScrollView,
   Image,
   TouchableOpacity,
-  StatusBar,
 } from "react-native";
 import FoodCard from "../../components/FoodCard";
 import { Colors } from '@/constants/Colors';
 import { useRouter} from 'expo-router';
+import { useAuth } from '@/contexts/AuthContext';
+import { SafeAreaView } from "react-native-safe-area-context";
 
 
 export default function Home() {
   const router = useRouter();
+  const { token } = useAuth();
+  const [name, setName] = useState('');
+
+  useEffect(() => {
+    const fetchUserName = async () => {
+      if (!token) return;
+
+      try {
+        const res = await fetch('http://hengkylaurencio.cloud:3000/user/me', {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        });
+
+        const json = await res.json();
+        if (json.status === 'success') {
+          setName(json.data.name);
+        } else {
+          console.warn('Gagal ambil nama:', json.message);
+        }
+      } catch (err) {
+        console.error('Error fetching user:', err);
+      }
+    };
+
+    fetchUserName();
+  }, [token]);
+
   return (
-    
+    <SafeAreaView>
     <ScrollView style={styles.container}>
-      <StatusBar barStyle="dark-content"/>
       <View style={styles.header}>
-        <Text style={styles.greeting}>Selamat Pagi, Albert</Text>
+        <Text style={styles.greeting}>Selamat Pagi, {name || '...'}</Text>
         <TouchableOpacity onPress={() => router.push('/(user)/user-profile')}>
           <Image
             source={require('@/assets/images/profile.jpeg')}
@@ -106,12 +136,12 @@ export default function Home() {
         </TouchableOpacity>
       </ScrollView>
     </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-
     backgroundColor: "#f9f9f9",
   },
   header: {
@@ -119,7 +149,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     paddingHorizontal: 18,
-    marginTop: 40,
+    marginTop: 18,
   },
 
   greeting: {
