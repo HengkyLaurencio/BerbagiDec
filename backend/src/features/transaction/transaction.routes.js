@@ -49,7 +49,7 @@ router.use(auth);
  */
 router.post('/', validate(schema.create), controller.create);
 
-router.get('/:id', controller.getTransactionDetail);
+router.get('/:id/get', controller.getTransactionDetail);
 
 /**
  * @swagger
