@@ -125,6 +125,16 @@ export default function OrderUserPage() {
     minute: "2-digit",
   });
 
+  const formatRupiah = (value: number | string) => {
+  return new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+    minimumFractionDigits: 0,
+  }).format(Number(value));
+};
+
+
+
   return (
     <SafeAreaView style={styles.container}>
     <ScrollView >
@@ -144,7 +154,7 @@ export default function OrderUserPage() {
         <Text style={styles.description}>{description}</Text>
 
         <Text style={styles.sectionTitle}>Detail</Text>
-        <Text>Harga: Rp{price}</Text>
+        <Text>Harga: {formatRupiah(price)}</Text>
         <Text>Sisa stok: {quantity-sold}</Text>
         <Text style={styles.detailText}>
           Pengambilan sebelum pukul {formattedTime}
