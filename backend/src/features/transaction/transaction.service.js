@@ -53,6 +53,15 @@ exports.getUserTransactions = async (userId) => {
   });
 };
 
+exports.getStoreTransactions = async (userId) => {
+  const store = await db.Store.findOne({ where: { userId } });
+
+  return await db.Transaction.findAll({
+    include: [{model: db.FoodItem, where: { storeId: store.id }}, {model: db.User}],
+    order: [['createdAt', 'DESC']],
+  });
+};
+
 exports.getAllTransactions = async () => {
   return await db.Transaction.findAll({
     include: {model: db.User , model: db.FoodItem},

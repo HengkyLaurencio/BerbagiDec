@@ -19,6 +19,15 @@ exports.getMyTransactions = async (req, res) => {
   }
 };
 
+exports.getMyStoreTransactions = async (req, res) => {
+  try {
+    const result = await service.getStoreTransactions(req.user.id);
+    return success(res, result);
+  } catch (err) {
+    return error(res, err);
+  }
+};
+
 exports.getAll = async (req, res) => {
   try {
     const result = await service.getAllTransactions();

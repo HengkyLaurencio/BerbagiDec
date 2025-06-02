@@ -58,6 +58,18 @@ router.use(auth);
  */
 router.post('/', validate(schema.create), role.isPartner, controller.create);
 
+/**
+ * @swagger
+ * /food/me:
+ *   get:
+ *     summary: Get all food items by store
+ *     tags: [FoodItems]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of food items
+ */
 router.get('/me', validate(schema.create), role.isPartner, controller.getAllFoodByStore);
 
 /**
