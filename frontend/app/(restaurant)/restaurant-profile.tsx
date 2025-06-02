@@ -1,52 +1,88 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { router, useNavigation } from 'expo-router';
 import { Colors } from '@/constants/Colors';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { StatusBar } from 'expo-status-bar';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function RestaurantProfileScreen() {
-  const [isOpen, setIsOpen] = useState(true); 
+  const navigation = useNavigation();
+  const { token } = useAuth();
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
 
-  const toggleStatus = () => {
-    setIsOpen(prev => !prev);
-  };
+  useEffect(() => {
+    const fetchRestaurantProfile = async () => {
+      if (!token) return;
+
+      try {
+        const res = await fetch('http://hengkylaurencio.cloud:3000/restaurant/me', {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        });
+
+        const json = await res.json();
+        if (json.status === 'success') {
+          setName(json.data.name);
+          setEmail(json.data.email);
+        } else {
+          console.warn('Gagal ambil data restoran:', json.message);
+        }
+      } catch (err) {
+        console.error('Error fetching restaurant profile:', err);
+      }
+    };
+
+    fetchRestaurantProfile();
+  }, [token]);
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.header}>Restoran</Text>
-
-      <View style={styles.profileSection}>
-        <Text style={styles.name}>Rumah Padang Sederhana</Text>
-        <Text style={styles.email}>rumahpadangsederhana@gmail.com</Text>
-
-        {/* Bisa diubah ke gambar kalau mau */}
-        <View style={styles.iconContainer}>
-          <Ionicons name="home-outline" size={250} color={Colors.berbagiDec.primary} />
+    <SafeAreaView style={styles.container}>
+      <StatusBar style="dark" />
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <View style={styles.header}>
+          <Ionicons
+            name="arrow-back"
+            size={30}
+            color="black"
+            onPress={() => navigation.goBack()}
+          />
+          <Text style={styles.title}>Restoran</Text>
         </View>
 
-        <TouchableOpacity
-          style={[
-            styles.statusContainer,
-            { backgroundColor: isOpen ? Colors.berbagiDec.primary : '#FF3B30' }
-          ]}
-          onPress={toggleStatus}
-        >
-          <Text style={styles.statusText}>{isOpen ? 'OPEN' : 'CLOSE'}</Text>
-        </TouchableOpacity>
+        <View style={styles.profileSection}>
+          <Ionicons name="home-outline" size={250} color={Colors.berbagiDec.primary} />
+            <Text style={styles.name}>tes{name}</Text>
+            <Text style={styles.email}>tes@gmail.com{email}</Text>
+            <TouchableOpacity onPress={() => router.push('/restaurantFeatures/restaurant-editprofile')} style={styles.editButton}>
+              <Text style={styles.editText}>Edit Profil</Text>
+            </TouchableOpacity>
+        </View>
 
-      </View>
-
-      <View style={styles.profileContainer}>
-        <ProfileContainer icon="settings-outline" label="Setting" />
-        <ProfileContainer icon="time-outline" label="Riwayat" />
-        <ProfileContainer icon="log-out-outline" label="Keluar" />
-      </View>
-    </View>
+        <View style={styles.profileContainer}>
+          <ProfileContainer icon="time-outline" label="Riwayat" onPress={() => router.push('/restaurant-history')} />
+          <ProfileContainer
+            icon="log-out-outline"
+            label="Keluar"
+            onPress={() => {
+              console.log('Logging out...');
+              router.replace('/auth/login');
+            }}
+          />
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
-function ProfileContainer({ icon, label }: { icon: any; label: string }) {
+function ProfileContainer({ icon, label, onPress }: { icon: any; label: string; onPress?: () => void }) {
   return (
-    <TouchableOpacity style={styles.profileItem}>
+    <TouchableOpacity style={styles.profileItem} onPress={onPress}>
       <View style={styles.profileLeft}>
         <Ionicons name={icon} size={22} color={Colors.berbagiDec.primary} />
         <Text style={styles.profileLabel}>{label}</Text>
@@ -60,47 +96,55 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.berbagiDec.background,
-    paddingTop: 40,
   },
   header: {
-    fontSize: 24,
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 16,
+    marginTop: 10,
+    marginBottom: 20,
+  },
+  title: {
+    fontSize: 20,
     fontWeight: "bold",
-    textAlign: "center",
-    marginBottom: 10,
+    marginLeft: 10,
+    color: Colors.berbagiDec.textPrimary,
   },
   profileSection: {
-    alignItems: 'center',
-    marginBottom: 30,
-    paddingHorizontal: 30,
-    gap: 5,
-  },
-  iconContainer: {
-    alignItems: 'center',
-  },
-  statusContainer: {
-    backgroundColor: Colors.berbagiDec.primary,
-    paddingHorizontal:30,
-    paddingVertical: 10,
-    borderRadius: 5,
-  },
-  statusText: {
-    color: '#fff',
-    fontWeight: 'bold',
-    fontSize: 25,
+      alignItems: 'center',
+      paddingHorizontal: 20,
+      marginBottom: 14, 
+      gap: 2,
   },
   name: {
-    fontSize: 25,
+    fontSize: 22,
     fontWeight: 'bold',
     color: Colors.berbagiDec.textPrimary,
-    marginTop: 8,
+    textAlign: 'center',
   },
   email: {
-    fontSize: 15,
+    fontSize: 18,
+    marginTop: 2,
     color: Colors.berbagiDec.textScondary,
+    textAlign: 'center',
+  },
+  editButton: {
+    backgroundColor: Colors.berbagiDec.primary,
+    paddingHorizontal: 20,
+    paddingVertical: 14,
+    borderRadius: 8,
+    marginTop: 6,
+    alignItems: 'center',
+  },
+  editText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 15,
   },
   profileContainer: {
-    gap: 10,
+    gap: 12,
     paddingHorizontal: 20,
+    marginBottom: 24,
   },
   profileItem: {
     flexDirection: 'row',
@@ -109,6 +153,10 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: Colors.berbagiDec.surface,
     alignItems: 'center',
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
   },
   profileLeft: {
     flexDirection: 'row',
