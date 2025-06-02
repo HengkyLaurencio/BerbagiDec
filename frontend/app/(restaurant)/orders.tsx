@@ -71,7 +71,7 @@ export default function OrdersScreen() {
         return "#FFA000";
       case "completed":
         return "#388E3C";
-      case "failed":
+      case "cancelled":
         return "#D32F2F";
       default:
         return "#555";
