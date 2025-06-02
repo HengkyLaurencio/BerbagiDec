@@ -11,28 +11,29 @@ import { useAuth } from '@/contexts/AuthContext';
 const slides = [
   {
     id: '1',
-    title: 'All your favorites',
-    description: 'Get all your loved foods in one place, you just place the order we do the rest',
-    image: require('../assets/images/placeholder.png'),
+    title: 'Semua Favoritmu',
+    description: 'Dapatkan semua makanan favoritmu di satu tempat, kamu pesan, kami antar',
+    image: require('../assets/images/onboard1.jpg'),
   },
   {
     id: '2',
-    title: 'Fast Delivery',
-    description: 'We deliver your order quickly and safely at your doorstep',
-    image: require('../assets/images/placeholder.png'),
+    title: 'Harga Terjangkau',
+    description: 'Nikmati hidangan lezat tanpa menguras dompet, makanan berkualitas dengan harga bersahabat',
+    image: require('../assets/images/onboard2.jpg'),
   },
   {
     id: '3',
-    title: 'Track Your Order',
-    description: 'Know where your order is at all times, from kitchen to your home',
-    image: require('../assets/images/placeholder.png'),
+    title: 'Bahan Segar',
+    description: 'Kami hanya menggunakan bahan-bahan segar untuk menyajikan hidangan terbaik untukmu',
+    image: require('../assets/images/onboard3.jpg'),
   },
   {
     id: '4',
-    title: 'Track Your Order',
-    description: 'Know where your order is at all times, from kitchen to your home',
-    image: require('../assets/images/placeholder.png'),
-  },
+    title: 'Pembayaran Mudah',
+    description: 'Bayar dengan mudah menggunakan berbagai metode yang tersedia sesuai kenyamananmu',
+    image: require('../assets/images/onboard4.jpg'),
+  }
+
 ];
 
 const Onboarding = () => {

@@ -9,6 +9,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { useNavigation, useLocalSearchParams } from "expo-router";
+import MapView, { Marker } from 'react-native-maps';
 import { Colors } from "@/constants/Colors";
 import { Ionicons } from "@expo/vector-icons";
 import Modal from "react-native-modal";
@@ -124,6 +125,16 @@ export default function OrderUserPage() {
     minute: "2-digit",
   });
 
+  const formatRupiah = (value: number | string) => {
+  return new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+    minimumFractionDigits: 0,
+  }).format(Number(value));
+};
+
+
+
   return (
     <SafeAreaView style={styles.container}>
     <ScrollView >
@@ -143,7 +154,7 @@ export default function OrderUserPage() {
         <Text style={styles.description}>{description}</Text>
 
         <Text style={styles.sectionTitle}>Detail</Text>
-        <Text>Harga: Rp{price}</Text>
+        <Text>Harga: {formatRupiah(price)}</Text>
         <Text>Sisa stok: {quantity-sold}</Text>
         <Text style={styles.detailText}>
           Pengambilan sebelum pukul {formattedTime}
@@ -151,10 +162,25 @@ export default function OrderUserPage() {
         <Text style={styles.restaurantName}>{store.storeName}</Text>
         <Text style={styles.address}>{store.storeAddress}</Text>
 
-        <Image
-          source={require("@/assets/images/map.jpg")}
-          style={styles.mapImage}
-        />
+        <MapView
+          style={styles.map}
+          initialRegion={{
+            latitude: parseFloat(store.latitude),
+            longitude: parseFloat(store.longitude),
+            latitudeDelta: 0.005,
+            longitudeDelta: 0.005,
+          }}
+        >
+          <Marker
+            coordinate={{
+              latitude: parseFloat(store.latitude),
+              longitude: parseFloat(store.longitude),
+            }}
+            title={store.storeName}
+            description={store.storeAddress}
+          />
+        </MapView>
+
 
         <TouchableOpacity
           style={styles.orderButton}
@@ -336,4 +362,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
   },
+  map: {
+  width: "100%",
+  height: 180,
+  borderRadius: 12,
+  marginBottom: 20,
+  },
+
 });
