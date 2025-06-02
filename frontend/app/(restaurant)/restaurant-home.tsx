@@ -1,8 +1,12 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text } from "react-native";
 import Svg, { Circle } from "react-native-svg";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function RestoranHomePage() {
+  const { token } = useAuth();
+  const [storeName, setStoreName] = useState("Memuat...");
+
   const total = 30;
   const completed = 5;
   const radius = 80;
@@ -10,6 +14,33 @@ export default function RestoranHomePage() {
   const percentage = completed / total;
   const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = circumference * (1 - percentage);
+
+  useEffect(() => {
+    const fetchStoreName = async () => {
+      if (!token) return;
+
+      try {
+        const res = await fetch("http://hengkylaurencio.cloud:3000/store/me", {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+
+        const json = await res.json();
+        if (json.status === "success") {
+          setStoreName(json.data.storeName);
+        } else {
+          console.warn("Gagal mengambil nama toko:", json.message);
+        }
+      } catch (err) {
+        console.error("Error mengambil data toko:", err);
+      }
+    };
+
+    fetchStoreName();
+  }, [token]);
 
   return (
     <View
@@ -28,7 +59,7 @@ export default function RestoranHomePage() {
           marginBottom: 40,
         }}
       >
-        Rumah Padang Sederhana
+        {storeName}
       </Text>
 
       <View

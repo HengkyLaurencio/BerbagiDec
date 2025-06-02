@@ -1,24 +1,71 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '@/constants/Colors';
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function RestaurantProfileScreen() {
-  const [isOpen, setIsOpen] = useState(true); 
+  const { token } = useAuth();
+  const [storeName, setStoreName] = useState("Memuat...");
+  const [userEmail, setUserEmail] = useState("Memuat...");
+  const [isOpen, setIsOpen] = useState(true);
 
   const toggleStatus = () => {
     setIsOpen(prev => !prev);
   };
+
+  useEffect(() => {
+    const fetchProfileData = async () => {
+      if (!token) return;
+
+      try {
+        // Fetch store name
+        const storeRes = await fetch("http://hengkylaurencio.cloud:3000/store/me", {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+
+        const storeJson = await storeRes.json();
+        if (storeJson.status === "success") {
+          setStoreName(storeJson.data.storeName);
+        } else {
+          console.warn("Gagal mengambil nama toko:", storeJson.message);
+        }
+
+        // Fetch user email
+        const userRes = await fetch("http://hengkylaurencio.cloud:3000/user/me", {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+
+        const userJson = await userRes.json();
+        if (userJson.status === "success") {
+          setUserEmail(userJson.data.email);
+        } else {
+          console.warn("Gagal mengambil email user:", userJson.message);
+        }
+      } catch (err) {
+        console.error("Gagal mengambil data profil:", err);
+      }
+    };
+
+    fetchProfileData();
+  }, [token]);
 
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Restoran</Text>
 
       <View style={styles.profileSection}>
-        <Text style={styles.name}>Rumah Padang Sederhana</Text>
-        <Text style={styles.email}>rumahpadangsederhana@gmail.com</Text>
+        <Text style={styles.name}>{storeName}</Text>
+        <Text style={styles.email}>{userEmail}</Text>
 
-        {/* Bisa diubah ke gambar kalau mau */}
         <View style={styles.iconContainer}>
           <Ionicons name="home-outline" size={250} color={Colors.berbagiDec.primary} />
         </View>
@@ -32,7 +79,6 @@ export default function RestaurantProfileScreen() {
         >
           <Text style={styles.statusText}>{isOpen ? 'OPEN' : 'CLOSE'}</Text>
         </TouchableOpacity>
-
       </View>
 
       <View style={styles.profileContainer}>
@@ -78,8 +124,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   statusContainer: {
-    backgroundColor: Colors.berbagiDec.primary,
-    paddingHorizontal:30,
+    paddingHorizontal: 30,
     paddingVertical: 10,
     borderRadius: 5,
   },
