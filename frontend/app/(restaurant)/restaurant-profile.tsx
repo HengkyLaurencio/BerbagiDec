@@ -1,15 +1,13 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, {useState, useCallback } from "react";
 import {
   View,
   Text,
   StyleSheet,
-  Image,
   TouchableOpacity,
   ScrollView,
   ActivityIndicator,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-4;
 import { router, useNavigation } from "expo-router";
 import { Colors } from "@/constants/Colors";
 import { useFocusEffect } from "@react-navigation/native";
@@ -19,8 +17,7 @@ import { useAuth } from "@/contexts/AuthContext";
 
 export default function RestaurantProfileScreen() {
   const [loading, setLoading] = useState<boolean>(true);
-  const navigation = useNavigation();
-  const { token, user } = useAuth();
+  const { token, user, logout} = useAuth();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
 
@@ -97,7 +94,7 @@ export default function RestaurantProfileScreen() {
             icon="log-out-outline"
             label="Keluar"
             onPress={() => {
-              console.log("Logging out...");
+              logout();
               router.replace("/auth/login");
             }}
           />

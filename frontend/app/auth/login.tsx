@@ -94,18 +94,6 @@ export default function Login() {
         </TouchableOpacity>
         </View>
 
-
-        <View style={styles.rememberForgotRow}>
-          <View style={styles.rememberMeContainer}>
-            <Checkbox
-              status={rememberMe ? 'checked' : 'unchecked'}
-              onPress={() => setRememberMe(!rememberMe)}
-              color="#2e7d32"
-            />
-            <Text style={styles.rememberText}>  Ingat Saya</Text>
-          </View>
-        </View>
-
         <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
         <Text style={styles.loginButtonText}>MASUK</Text>
         </TouchableOpacity>

@@ -5,6 +5,9 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 const { width } = Dimensions.get('window');
 
+import { useEffect } from 'react';
+import { useAuth } from '@/contexts/AuthContext';
+
 const slides = [
   {
     id: '1',
@@ -36,6 +39,7 @@ const Onboarding = () => {
   const flatListRef = useRef<FlatList>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const router = useRouter();
+  const { token, user } = useAuth();
 
   const handleNext = () => {
     if (currentIndex < slides.length - 1) {
@@ -67,6 +71,21 @@ const Onboarding = () => {
       ))}
     </View>
   );
+
+  useEffect(() => {
+    if (!token || !user) {
+      return;
+    }
+
+    // Sudah login, arahkan berdasarkan role
+    if (user.role === 'CUSTOMER') {
+      router.replace('/(user)/user-home');
+    } else if (user.role === 'PARTNER') {
+      router.replace('/(restaurant)/restaurant-home');
+    } else {
+      router.replace('/');
+    }
+  }, [token, user]);
 
   return (
     <SafeAreaView style={styles.container}>  

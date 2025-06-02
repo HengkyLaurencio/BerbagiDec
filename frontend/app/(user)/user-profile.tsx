@@ -9,7 +9,7 @@ import { StatusBar } from 'expo-status-bar';
 
 export default function ProfileScreen() {
   const navigation = useNavigation();
-  const { token } = useAuth();
+  const { token, logout } = useAuth();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   
@@ -80,9 +80,8 @@ useEffect(() => {
               icon="log-out-outline"
               label="Keluar"
               onPress={() => {
-                // Replace this with your logout logic if you have it in context
-                console.log('Logging out...');
-                router.replace('/auth/login'); 
+                logout();
+                router.replace("/auth/login");
               }}
             />
         </View>
