@@ -64,7 +64,7 @@ useEffect(() => {
           <View>
             <Text style={styles.name}>{name}</Text>
             <Text style={styles.email}>{email}</Text>
-            <TouchableOpacity style={styles.editButton}>
+            <TouchableOpacity onPress={() => router.push('/user-editprofile')}style={styles.editButton}>
               <Text style={styles.editText}>Edit Profil</Text>
             </TouchableOpacity>
           </View>
