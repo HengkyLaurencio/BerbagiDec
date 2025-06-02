@@ -44,6 +44,14 @@ exports.createTransaction = async (userId, data) => {
   });
 };
 
+exports.getTransactionDetail = async (transactionId) => {
+  return await db.Transaction.findOne({
+    where: { id:transactionId },
+    include: [{model: db.FoodItem}, {model: db.User}],
+    order: [['createdAt', 'DESC']],
+  });
+};
+
 
 exports.getUserTransactions = async (userId) => {
   return await db.Transaction.findAll({

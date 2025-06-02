@@ -10,6 +10,15 @@ exports.create = async (req, res) => {
   }
 };
 
+exports.getTransactionDetail = async (req, res) => {
+  try {
+    const result = await service.getTransactionDetail(req.params.id);
+    return success(res, result, 'Transaction found');
+  } catch (err) {
+    return error(res, err);
+  }
+};
+
 exports.getMyTransactions = async (req, res) => {
   try {
     const result = await service.getUserTransactions(req.user.id);
