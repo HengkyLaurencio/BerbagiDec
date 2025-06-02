@@ -12,6 +12,7 @@ import {
 import { Feather } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useAuth } from '@/contexts/AuthContext';
+import MapView, { Marker } from 'react-native-maps';
 
 export default function RegisterRestoran() {
   const router = useRouter();
@@ -124,25 +125,36 @@ export default function RegisterRestoran() {
             value={closeTime}
             onChangeText={setCloseTime}
           />
+          
+          <Text style={[styles.label, { marginTop: 20 }]}>Pilih Lokasi Restoran</Text>
 
-          {/* Untuk saat ini manual dulu */}
-          <Text style={[styles.label, { marginTop: 20 }]}>Latitude</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Contoh: -6.200000"
-            keyboardType="numeric"
-            value={latitude}
-            onChangeText={setLatitude}
-          />
+          <MapView
+            style={styles.map}
+            initialRegion={{
+              latitude: -6.168624653279471,
+              longitude: 106.79188806563616,
+              latitudeDelta: 0.01,
+              longitudeDelta: 0.01,
+            }}
+            onPress={(e) => {
+              const { latitude, longitude } = e.nativeEvent.coordinate;
+              setLatitude(latitude.toString());
+              setLongitude(longitude.toString());
+            }}
+          >
+            {latitude && longitude ? (
+              <Marker
+                coordinate={{
+                  latitude: parseFloat(latitude),
+                  longitude: parseFloat(longitude),
+                }}
+                title="Lokasi Restoran"
+              />
+            ) : null}
+          </MapView>
+          <Text style={styles.latlngText}>Latitude: {latitude}</Text>
+          <Text style={styles.latlngText}>Longitude: {longitude}</Text>
 
-          <Text style={[styles.label, { marginTop: 20 }]}>Longitude</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Contoh: 106.816666"
-            keyboardType="numeric"
-            value={longitude}
-            onChangeText={setLongitude}
-          />
 
           <TouchableOpacity style={styles.registerButton} onPress={handleRegister}>
             <Text style={styles.registerButtonText}>Daftar</Text>
@@ -206,4 +218,16 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: 'bold',
   },
+  map: {
+  width: '100%',
+  height: 200,
+  borderRadius: 10,
+  marginTop: 10,
+  },
+  latlngText: {
+    marginTop: 10,
+    fontSize: 14,
+    color: '#444',
+  },
+
 });
