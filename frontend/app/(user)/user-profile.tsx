@@ -71,9 +71,22 @@ useEffect(() => {
         </View>
 
         <View style={styles.profileContainer}>
-          <ProfileContainer icon="time-outline" label="Riwayat" />
-          <ProfileContainer icon="log-out-outline" label="Keluar" />
+            <ProfileContainer
+              icon="time-outline"
+              label="Riwayat"
+              onPress={() => router.push('/history')}
+            />
+            <ProfileContainer
+              icon="log-out-outline"
+              label="Keluar"
+              onPress={() => {
+                // Replace this with your logout logic if you have it in context
+                console.log('Logging out...');
+                router.replace('/auth/login'); 
+              }}
+            />
         </View>
+
 
         <View style={styles.menuContent}>
           <Text style={styles.menuTitle}>Daftar Menjadi Mitra</Text>
@@ -90,9 +103,9 @@ useEffect(() => {
   );
 }
 
-function ProfileContainer({ icon, label }: { icon: any; label: string }) {
+function ProfileContainer({ icon, label, onPress }: { icon: any; label: string; onPress?: () => void }) {
   return (
-    <TouchableOpacity style={styles.profileItem}>
+    <TouchableOpacity style={styles.profileItem} onPress={onPress}>
       <View style={styles.profileLeft}>
         <Ionicons name={icon} size={22} color={Colors.berbagiDec.primary} />
         <Text style={styles.profileLabel}>{label}</Text>
@@ -101,6 +114,7 @@ function ProfileContainer({ icon, label }: { icon: any; label: string }) {
     </TouchableOpacity>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: {
