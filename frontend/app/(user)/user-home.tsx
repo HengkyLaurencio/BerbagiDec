@@ -135,11 +135,12 @@ export default function Home() {
           </TouchableOpacity>
         </View>
         <View style={styles.searchContainer}>
-          <TextInput
-            placeholder="Search"
-            style={styles.searchInput}
-            onFocus={() => router.push("/search")}
-          />
+          <TouchableOpacity
+            style={styles.searchButton}
+            onPress={() => router.push("/search")}
+          >
+            <Text style={styles.searchText}>Cari makanan...</Text>
+          </TouchableOpacity>
         </View>
 
         <View style={styles.menuContainer}>
@@ -245,12 +246,17 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: "green",
     borderRadius: 12,
-    flexDirection: "row",
     paddingHorizontal: 12,
   },
-  searchInput: {
-    flex: 1,
+
+  searchButton: {
     height: 40,
+    justifyContent: "center",
+  },
+
+  searchText: {
+    color: "#666",
+    fontSize: 16,
   },
   menuContainer: {
     marginHorizontal: 16,
