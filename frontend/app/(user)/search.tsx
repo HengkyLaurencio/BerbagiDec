@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Platform,
+  SafeAreaView,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { router, useFocusEffect, useNavigation } from "expo-router";
@@ -67,69 +68,103 @@ export default function SearchScreen() {
   );
 
   return (
-    <ScrollView style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <Ionicons
-          name="arrow-back"
-          size={24}
-          onPress={() => navigation.goBack()}
-        />
-        <Text style={styles.headerTitle}>Pencarian Makanan</Text>
-      </View>
+    <SafeAreaView style={styles.safeContainer}>
+      <ScrollView style={styles.container}>
+        {/* Header */}
+        <View style={styles.header}>
+          <Ionicons
+            name="arrow-back"
+            size={24}
+            onPress={() => navigation.goBack()}
+          />
+          <Text style={styles.headerTitle}>Pencarian Makanan</Text>
+        </View>
 
-      {/* Search Bar */}
-      <View style={styles.searchContainer}>
-        <Ionicons
-          name="search"
-          size={20}
-          color="#999"
-          style={{ marginRight: 6 }}
-        />
-        <TextInput
-          placeholder="Cari nama makanan..."
-          style={styles.searchInput}
-          value={search}
-          onChangeText={setSearch}
-        />
-      </View>
+        {/* Search Bar */}
+        <View style={styles.searchContainer}>
+          <Ionicons
+            name="search"
+            size={20}
+            color="#999"
+            style={{ marginRight: 6 }}
+          />
+          <TextInput
+            placeholder="Cari nama makanan..."
+            style={styles.searchInput}
+            value={search}
+            onChangeText={setSearch}
+          />
+        </View>
 
-      {/* Loading */}
-      {loading && (
-        <ActivityIndicator
-          size="large"
-          color="green"
-          style={{ marginTop: 20 }}
-        />
-      )}
+        {/* Loading */}
+        {loading && (
+          <ActivityIndicator
+            size="large"
+            color="green"
+            style={{ marginTop: 20 }}
+          />
+        )}
 
-      {/* Food List */}
-      {!loading &&
-        filteredFoods.map((food) => (
-          <TouchableOpacity key={food.id} style={styles.card} onPress={() =>
-            router.push({
-              pathname: "/(user)/user-order/[foodID]",
-              params: { foodID: String(food.id) },
-            })
-          }>
-            <Image source={{ uri: food.imageUrl }} style={styles.cardImage} />
-            <View style={styles.cardContent}>
-              <Text style={styles.cardTitle}>{food.name}</Text>
-              <Text style={styles.cardSubtitle}>{food.description}</Text>
-              <Text style={styles.cardPrice}>
-                Rp {parseInt(food.price).toLocaleString()}
-              </Text>
-              <Text style={styles.cardStore}>
-                {food.store.storeName} - {food.store.storeAddress}
-              </Text>
-            </View>
-          </TouchableOpacity>
-        ))}
-    </ScrollView>
+        {/* Food List */}
+        {!loading &&
+          filteredFoods.map((food) => (
+            <TouchableOpacity
+              key={food.id}
+              style={styles.card}
+              onPress={() =>
+                router.push({
+                  pathname: "/(user)/user-order/[foodID]",
+                  params: { foodID: String(food.id) },
+                })
+              }
+            >
+              <Image
+                source={
+                  food.imageUrl
+                    ? { uri: food.imageUrl }
+                    : require("@/assets/images/food.jpg")
+                }
+                style={styles.cardImage}
+              />
+
+              <View style={styles.cardContent}>
+                <Text
+                  style={styles.cardTitle}
+                  numberOfLines={1}
+                  ellipsizeMode="tail"
+                >
+                  {food.name}
+                </Text>
+                <Text
+                  style={styles.cardSubtitle}
+                  numberOfLines={1}
+                  ellipsizeMode="tail"
+                >
+                  {food.description}
+                </Text>
+                <Text style={styles.cardPrice}>
+                  Rp {parseInt(food.price).toLocaleString()}
+                </Text>
+                <Text
+                  style={styles.cardStore}
+                  numberOfLines={1}
+                  ellipsizeMode="tail"
+                >
+                  {food.store.storeName} - {food.store.storeAddress}
+                </Text>
+              </View>
+            </TouchableOpacity>
+          ))}
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  safeContainer: {
+    flex: 1,
+    backgroundColor: "#fff",
+  },
   container: {
     paddingTop: Platform.OS === "android" ? 40 : 60,
     backgroundColor: "#fff",
@@ -163,6 +198,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderRadius: 12,
     marginBottom: 16,
+    overflow: "hidden", // penting untuk batasi image/child
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
@@ -171,9 +207,9 @@ const styles = StyleSheet.create({
   },
   cardImage: {
     width: 100,
-    height: 100,
-    borderTopLeftRadius: 12,
-    borderBottomLeftRadius: 12,
+    height: 110,
+    resizeMode: "cover",
+    backgroundColor: "#eee",
   },
   cardContent: {
     flex: 1,
@@ -183,6 +219,7 @@ const styles = StyleSheet.create({
   cardTitle: {
     fontSize: 16,
     fontWeight: "bold",
+    color: "#333",
   },
   cardSubtitle: {
     fontSize: 13,
@@ -193,11 +230,11 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "green",
     fontWeight: "600",
-    marginTop: 4,
+    marginTop: 2,
   },
   cardStore: {
     fontSize: 12,
     color: "#888",
-    marginTop: 4,
+    marginTop: 2,
   },
 });
