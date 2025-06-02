@@ -15,6 +15,7 @@ import Modal from "react-native-modal";
 import { TextInput } from "react-native";
 
 import { useAuth } from "@/contexts/AuthContext";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function OrderUserPage() {
   const { foodID } = useLocalSearchParams<{ foodID: string }>();
@@ -27,9 +28,37 @@ export default function OrderUserPage() {
 
   const { token } = useAuth();
 
-  const handleConfirm = () => {
-    setModalVisible(false);
+  const handleConfirm = async () => {
+    try {
+      const response = await fetch("http://hengkylaurencio.cloud:3000/transactions", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          foodItemId: Number(foodID),
+          quantity: Number(orderQuantity),
+          pickupTime: new Date().toISOString(), 
+        }),
+      });
+  
+      const json = await response.json();
+  
+      if (!response.ok) {
+        throw new Error(json.message || "Gagal membuat transaksi");
+      }
+  
+      alert("Transaksi berhasil!");
+      setModalVisible(false);
+      navigation.goBack(); 
+  
+    } catch (error: any) {
+      console.error("Transaction error:", error);
+      alert(error.message || "Terjadi kesalahan saat melakukan transaksi.");
+    }
   };
+  
 
   useEffect(() => {
     const fetchFood = async () => {
@@ -83,6 +112,7 @@ export default function OrderUserPage() {
     name,
     description,
     price,
+    sold,
     quantity,
     availableUntil,
     imageUrl,
@@ -95,7 +125,8 @@ export default function OrderUserPage() {
   });
 
   return (
-    <ScrollView style={styles.container}>
+    <SafeAreaView style={styles.container}>
+    <ScrollView >
       <View style={styles.headerWrapper}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Ionicons name="arrow-back" size={24} color="black" />
@@ -113,7 +144,7 @@ export default function OrderUserPage() {
 
         <Text style={styles.sectionTitle}>Detail</Text>
         <Text>Harga: Rp{price}</Text>
-        <Text>Sisa stok: {quantity}</Text>
+        <Text>Sisa stok: {quantity-sold}</Text>
         <Text style={styles.detailText}>
           Pengambilan sebelum pukul {formattedTime}
         </Text>
@@ -183,6 +214,7 @@ export default function OrderUserPage() {
         </View>
       </Modal>
     </ScrollView>
+    </SafeAreaView>
   );
 }
 
