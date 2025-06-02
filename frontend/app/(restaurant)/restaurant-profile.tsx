@@ -109,10 +109,10 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   title: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: "bold",
     textAlign: "center",
-    color: Colors.berbagiDec.textPrimary,
+    marginBottom: 15,
   },
   profileSection: {
       alignItems: 'center',

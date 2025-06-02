@@ -155,9 +155,6 @@ export default function Home() {
               <Text style={styles.menuSubtitle}>
                 Jangan Sampe Ada Makanan Tersisa
               </Text>
-              <TouchableOpacity style={styles.button}>
-                <Text style={styles.buttonText}>Selengkapnya</Text>
-              </TouchableOpacity>
             </View>
           </View>
         </View>
@@ -271,25 +268,24 @@ const styles = StyleSheet.create({
   menuOverlay: {
     ...StyleSheet.absoluteFillObject,
     justifyContent: "center",
-    alignItems: "flex-start",
+    alignItems: "center",
   },
   menuOverlayBackground: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: "rgba(0, 0, 0, 0.4)",
   },
-  menuContent: {
-    marginLeft: 20,
-  },
   menuTitle: {
-    fontSize: 24,
+    fontSize: 30,
     fontWeight: "bold",
     color: "#fff",
+    textAlign: 'center',
   },
   menuSubtitle: {
     fontSize: 16,
     fontWeight: "600",
     color: "#fff",
     marginTop: 4,
+    textAlign: 'center',
   },
   button: {
     marginTop: 10,

@@ -9,10 +9,10 @@ import {
   ScrollView,
   Alert,
 } from 'react-native';
-import { Feather } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
+import { useRouter, useNavigation } from 'expo-router';
 import { useAuth } from '@/contexts/AuthContext';
 import MapView, { Marker } from 'react-native-maps';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function RegisterRestoran() {
   const router = useRouter();
@@ -24,6 +24,7 @@ export default function RegisterRestoran() {
   const [latitude, setLatitude] = useState('');
   const [longitude, setLongitude] = useState('');
   const { token } = useAuth();
+  const navigation = useNavigation();
 
   const handleRegister = async () => {
     if (!token) return;
@@ -53,7 +54,7 @@ export default function RegisterRestoran() {
   
       const contentType = response.headers.get('content-type');
       if (!response.ok) {
-        const text = await response.text(); // bisa HTML kalau error
+        const text = await response.text(); 
         if (contentType?.includes('application/json')) {
           const errJson = JSON.parse(text);
           Alert.alert('Gagal', errJson.message || 'Gagal mendaftarkan restoran.');
@@ -76,9 +77,10 @@ export default function RegisterRestoran() {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
-        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-          <Feather name="arrow-left" size={24} color="white" />
-        </TouchableOpacity>
+      <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+        <Ionicons name="arrow-back" size={30} color="white" />
+      </TouchableOpacity>
+
 
         <View style={styles.greenHeader}>
           <Text style={styles.headerTitle}>Daftar Restoran</Text>
@@ -171,9 +173,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#2e7d32',
   },
   backButton: {
-    position: 'absolute',
-    top: 25,
-    left: 25,
+    top: 40,
+    left: 20,
     zIndex: 10,
   },
   greenHeader: {
