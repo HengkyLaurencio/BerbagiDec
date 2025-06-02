@@ -127,8 +127,8 @@ const styles = StyleSheet.create({
   headerTitle: {
     textShadowOffset: {width: 0, height:5},
     textShadowRadius: 7,
-    marginTop: 300,
-    marginBottom:25,
+    marginTop: 480,
+    marginBottom: 30,
     fontSize: 28,
     color: '#fff',
     fontWeight: 'bold',
@@ -166,7 +166,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#2e7d32',
     padding: 15,
     borderRadius: 10,
-    marginTop: 25,
+    marginTop: 'auto',
     alignItems: 'center',
   },
   loginButtonText: {
