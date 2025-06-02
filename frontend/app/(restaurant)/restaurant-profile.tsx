@@ -10,28 +10,29 @@ import { useAuth } from '@/contexts/AuthContext';
 
 export default function RestaurantProfileScreen() {
   const navigation = useNavigation();
-  const { token } = useAuth();
+  const { token,user } = useAuth();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
 
 
   useEffect(() => {
     const fetchRestaurantProfile = async () => {
-      if (!token) return;
+      if (!token || !user) return;
 
       try {
-        const res = await fetch('http://hengkylaurencio.cloud:3000/restaurant/me', {
+        const res = await fetch('http://hengkylaurencio.cloud:3000/store/me', {
           method: 'GET',
           headers: {
             Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
         });
 
         const json = await res.json();
+
         if (json.status === 'success') {
-          setName(json.data.name);
-          setEmail(json.data.email);
+          setName(json.data.storeName);
+          setEmail(user.email);
         } else {
           console.warn('Gagal ambil data restoran:', json.message);
         }
@@ -48,26 +49,20 @@ export default function RestaurantProfileScreen() {
       <StatusBar style="dark" />
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.header}>
-          <Ionicons
-            name="arrow-back"
-            size={30}
-            color="black"
-            onPress={() => navigation.goBack()}
-          />
           <Text style={styles.title}>Restoran</Text>
         </View>
 
         <View style={styles.profileSection}>
           <Ionicons name="home-outline" size={250} color={Colors.berbagiDec.primary} />
-            <Text style={styles.name}>tes{name}</Text>
-            <Text style={styles.email}>tes@gmail.com{email}</Text>
+            <Text style={styles.name}>{name}</Text>
+            <Text style={styles.email}>{email}</Text>
             <TouchableOpacity onPress={() => router.push('/restaurantFeatures/restaurant-editprofile')} style={styles.editButton}>
               <Text style={styles.editText}>Edit Profil</Text>
             </TouchableOpacity>
         </View>
 
         <View style={styles.profileContainer}>
-          <ProfileContainer icon="time-outline" label="Riwayat" onPress={() => router.push('/restaurant-history')} />
+          <ProfileContainer icon="time-outline" label="Riwayat" onPress={() => router.push('/')} />
           <ProfileContainer
             icon="log-out-outline"
             label="Keluar"
@@ -100,7 +95,6 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.berbagiDec.background,
   },
   header: {
-    flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 16,
     marginTop: 10,
@@ -109,7 +103,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: "bold",
-    marginLeft: 10,
+    textAlign: "center",
     color: Colors.berbagiDec.textPrimary,
   },
   profileSection: {
