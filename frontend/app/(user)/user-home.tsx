@@ -14,11 +14,87 @@ import { useRouter} from 'expo-router';
 import { useAuth } from '@/contexts/AuthContext';
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import * as Location from 'expo-location';
+
+type Store = {
+  id: number;
+  storeName: string;
+  latitude: string;
+  longitude: string;
+};
+
+type FoodItem = {
+  id: number;
+  name: string;
+  imageUrl: string;
+  store: Store;
+  distance?: number;
+};
+
 
 export default function Home() {
   const router = useRouter();
   const { token } = useAuth();
   const [name, setName] = useState('');
+
+  const [recommended, setRecommended] = useState<FoodItem[]>([]);
+  const [nearby, setNearby] = useState<FoodItem[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if (!token) return;
+        // Fetch data from API
+        const res = await fetch('http://hengkylaurencio.cloud:3000/food', {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        });
+
+        const json = await res.json();
+
+        if (json.status === 'success') {
+          const foods: FoodItem[] = json.data;
+
+          // Ambil 5 makanan pertama untuk rekomendasi
+          setRecommended(foods.slice(0, 5));
+
+          // Ambil lokasi pengguna
+          const { status } = await Location.requestForegroundPermissionsAsync();
+          if (status !== 'granted') {
+            console.warn('Izin lokasi ditolak');
+            return;
+          }
+
+          const location = await Location.getCurrentPositionAsync({});
+          const userLat = location.coords.latitude;
+          const userLon = location.coords.longitude;
+
+          // Hitung jarak Euclidean dan ambil 5 terdekat
+          const withDistance = foods.map(food => {
+            const storeLat = parseFloat(food.store.latitude);
+            const storeLon = parseFloat(food.store.longitude);
+            const distance = Math.sqrt(
+              Math.pow(storeLat - userLat, 2) + Math.pow(storeLon - userLon, 2)
+            );
+            return { ...food, distance };
+          });
+
+          const sortedByDistance = withDistance
+            .sort((a, b) => (a.distance ?? 0) - (b.distance ?? 0))
+            .slice(0, 5);
+
+          setNearby(sortedByDistance);
+        }
+      } catch (err) {
+        console.error('Gagal fetch data:', err);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   useEffect(() => {
     const fetchUserName = async () => {
@@ -88,53 +164,31 @@ export default function Home() {
 
       <Text style={styles.sectionTitle}>Rekomendasi</Text>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.horizontalScroll}>
-        <TouchableOpacity onPress={() => router.push('/user-order')}>
-          <FoodCard
-            title="Nasi Padang"
-            subtitle="Rumah Padang Sederhana"
-            image={require("../../assets/images/foodHome.jpg")}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => router.push('/user-order')}>
-          <FoodCard
-            title="Nasi Goreng"
-            subtitle="Warung Mas Rudi"
-            image={require("../../assets/images/foodHome.jpg")}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => router.push('/user-order')}>
-          <FoodCard
-            title="Mie Ayam"
-            subtitle="Bakmi Enak"
-            image={require("../../assets/images/foodHome.jpg")}
-          />
-        </TouchableOpacity>
+        {recommended.map(item => (
+          <TouchableOpacity key={item.id} onPress={() => router.push('/user-order')}>
+            <FoodCard
+              title={item.name}
+              subtitle={item.store.storeName}
+              image={{ uri: item.imageUrl }}
+            />
+          </TouchableOpacity>
+        ))}
       </ScrollView>
 
       <Text style={styles.sectionTitle}>Terdekat</Text>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.horizontalScroll}>
-        <TouchableOpacity onPress={() => router.push('/user-order')}>
-          <FoodCard
-            title="Nasi Padang"
-            subtitle="Rumah Padang Sederhana"
-            image={require("../../assets/images/foodHome.jpg")}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => router.push('/user-order')}>
-          <FoodCard
-            title="Ayam Geprek"
-            subtitle="Geprek Juara"
-            image={require("../../assets/images/food.jpg")}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => router.push('/user-order')}>
-          <FoodCard
-            title="Soto Ayam"
-            subtitle="Soto Pak Gino"
-            image={require("../../assets/images/food.jpg")}
-          />
-        </TouchableOpacity>
+        {nearby.map(item => (
+          <TouchableOpacity key={item.id} onPress={() => router.push('/user-order')}>
+            <FoodCard
+              title={item.name}
+              subtitle={item.store.storeName}
+              image={{ uri: item.imageUrl }}
+            />
+          </TouchableOpacity>
+        ))}
       </ScrollView>
+
+
     </ScrollView>
     </SafeAreaView>
   );
