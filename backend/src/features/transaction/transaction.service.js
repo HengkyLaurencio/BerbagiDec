@@ -44,11 +44,28 @@ exports.createTransaction = async (userId, data) => {
   });
 };
 
+exports.getTransactionDetail = async (transactionId) => {
+  return await db.Transaction.findOne({
+    where: { id:transactionId },
+    include: [{model: db.FoodItem}, {model: db.User}],
+    order: [['createdAt', 'DESC']],
+  });
+};
+
 
 exports.getUserTransactions = async (userId) => {
   return await db.Transaction.findAll({
     where: { userId },
     include: {model: db.FoodItem},
+    order: [['createdAt', 'DESC']],
+  });
+};
+
+exports.getStoreTransactions = async (userId) => {
+  const store = await db.Store.findOne({ where: { userId } });
+
+  return await db.Transaction.findAll({
+    include: [{model: db.FoodItem, where: { storeId: store.id }}, {model: db.User}],
     order: [['createdAt', 'DESC']],
   });
 };

@@ -1,38 +1,80 @@
-import React from 'react';
-import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from 'expo-router';
 import { Colors } from '@/constants/Colors';
 
-const data = [
-  {
-    id: 1,
-    title: 'Nasi Padang',
-    subtitle: 'Rumah Padang Sederhana',
-    datetime: 'Senin, 1 Januari 2025, 15:00',
-    status: 'Selesai',
-    statusColor: '#2ECC71',
-  },
-  {
-    id: 2,
-    title: 'Nasi Padang',
-    subtitle: 'Rumah Padang Sederhana',
-    datetime: 'Senin, 1 Januari 2025, 15:00',
-    status: 'Proses',
-    statusColor: '#F39C12',
-  },
-  {
-    id: 3,
-    title: 'Nasi Padang',
-    subtitle: 'Rumah Padang Sederhana',
-    datetime: 'Senin, 1 Januari 2025, 15:00',
-    status: 'Gagal',
-    statusColor: '#E74C3C',
-  },
-];
+import { useAuth } from "@/contexts/AuthContext";
+
+type Transaction = {
+  id: number;
+  foodItem: {
+    name: string;
+    imageUrl: string;
+    description: string;
+  };
+  pickupTime: string;
+  status: string;
+};
 
 export default function HistoryScreen() {
   const navigation = useNavigation();
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  const { token } = useAuth();
+
+  useEffect(() => {
+    const fetchTransactions = async () => {
+      try {
+        const res = await fetch('http://hengkylaurencio.cloud:3000/transactions/me', {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        });
+
+        const json = await res.json();
+        if (json.status === 'success') {
+          setTransactions(json.data);
+        } else {
+          console.error('Fetch failed:', json.message);
+        }
+      } catch (error) {
+        console.error('Error fetching transactions:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTransactions();
+  }, []);
+
+  const formatDate = (isoString: string) => {
+    const date = new Date(isoString);
+    return date.toLocaleString('id-ID', {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'completed':
+        return '#2ECC71';
+      case 'pending':
+        return '#F39C12';
+      case 'failed':
+        return '#E74C3C';
+      default:
+        return '#95A5A6';
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -40,37 +82,38 @@ export default function HistoryScreen() {
         <Ionicons
           name="arrow-back"
           size={24}
-          color= "Black"
+          color="black"
           onPress={() => navigation.goBack()}
         />
         <Text style={styles.title}>Riwayat</Text>
       </View>
 
-      <ScrollView style={styles.scroll}>
-          {data.map((item) => (
-          <TouchableOpacity
-               key={item.id}
-               style={styles.card}
-               onPress={() => {
-                    
-               }}
-          >
-               <Image
-               source={require('@/assets/images/food.jpg')}
-               style={styles.image}
-               />
-               <View style={styles.cardContent}>
-               <Text style={styles.cardTitle}>{item.title}</Text>
-               <Text style={styles.cardSubtitle}>{item.subtitle}</Text>
-               <Text style={styles.cardDate}>{item.datetime}</Text>
-               <Text style={[styles.cardStatus, { color: item.statusColor }]}>
-                    {item.status}
-               </Text>
-               </View>
-          </TouchableOpacity>
-  ))}
-</ScrollView>
-
+      {loading ? (
+        <ActivityIndicator size="large" color={Colors.berbagiDec.primary} style={{ marginTop: 50 }} />
+      ) : (
+        <ScrollView style={styles.scroll}>
+          {transactions.map((item) => (
+            <TouchableOpacity key={item.id} style={styles.card}>
+              <Image
+                source={{ uri: `${item.foodItem.imageUrl}` }}
+                style={styles.image}
+              />
+              <View style={styles.cardContent}>
+                <Text style={styles.cardTitle}>{item.foodItem.name}</Text>
+                <Text style={styles.cardSubtitle}>{item.foodItem.description}</Text>
+                <Text style={styles.cardDate}>{formatDate(item.pickupTime)}</Text>
+                <Text style={[styles.cardStatus, { color: getStatusColor(item.status) }]}>
+                  {item.status === 'completed'
+                    ? 'Selesai'
+                    : item.status === 'pending'
+                    ? 'Proses'
+                    : item.status}
+                </Text>
+              </View>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      )}
     </View>
   );
 }
@@ -82,32 +125,32 @@ const styles = StyleSheet.create({
     paddingTop: 40,
   },
   header: {
-     flexDirection: "row",
-     alignItems: "center",
-     marginHorizontal: 16,
-     marginBottom: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginHorizontal: 16,
+    marginBottom: 10,
   },
   title: {
-     fontSize: 20,
-     fontWeight: "bold",
-     marginLeft: 8,
-     color: Colors.berbagiDec.textPrimary,
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginLeft: 8,
+    color: Colors.berbagiDec.textPrimary,
   },
   scroll: {
     flex: 1,
   },
   card: {
-     flexDirection: 'row',
-     backgroundColor: Colors.berbagiDec.background,
-     borderRadius: 12,
-     padding: 10,
-     marginBottom: 12,
-     elevation: 2,
-     shadowColor: '#000',
-     shadowOpacity: 0.3,
-     shadowRadius: 3,
-     marginHorizontal: 25,
-   },
+    flexDirection: 'row',
+    backgroundColor: Colors.berbagiDec.background,
+    borderRadius: 12,
+    padding: 10,
+    marginBottom: 12,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
+    marginHorizontal: 25,
+  },
   image: {
     width: 100,
     height: 100,
@@ -121,19 +164,19 @@ const styles = StyleSheet.create({
   },
   cardTitle: {
     fontWeight: 'bold',
-    fontSize: 25,
+    fontSize: 20,
   },
   cardSubtitle: {
     color: Colors.berbagiDec.textPrimary,
-    fontSize: 15,
-    fontWeight: "bold",
+    fontSize: 14,
+    fontWeight: '500',
   },
   cardDate: {
-     fontSize: 15,
-     color: Colors.berbagiDec.textPrimary,
-   },
+    fontSize: 13,
+    color: Colors.berbagiDec.textPrimary,
+  },
   cardStatus: {
-    marginTop: 4,
+    marginTop: 6,
     fontWeight: 'bold',
   },
 });

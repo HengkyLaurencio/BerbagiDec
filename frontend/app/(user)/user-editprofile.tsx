@@ -12,7 +12,7 @@ export default function EditProfileScreen() {
   const { token } = useAuth();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
+  const [phoneNumber, setPhone] = useState('');
 
 
   useEffect(() => {
@@ -39,13 +39,13 @@ export default function EditProfileScreen() {
 
   const handleSave = async () => {
     try {
-      const res = await fetch('http://hengkylaurencio.cloud:3000/user/update', {
+      const res = await fetch('http://hengkylaurencio.cloud:3000/user/me', {
         method: 'PUT',
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ name }),
+        body: JSON.stringify({ name, phoneNumber }),
         
       });
       const json = await res.json();
@@ -90,7 +90,7 @@ export default function EditProfileScreen() {
           style={styles.input}
           placeholder=""
           keyboardType="phone-pad"
-          value={phone}
+          value={phoneNumber}
           onChangeText={setPhone}
         />
 

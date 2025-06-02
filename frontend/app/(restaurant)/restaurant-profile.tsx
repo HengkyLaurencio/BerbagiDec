@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'rea
 import { Ionicons } from '@expo/vector-icons';
 import { router, useNavigation } from 'expo-router';
 import { Colors } from '@/constants/Colors';
+
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { useAuth } from '@/contexts/AuthContext';
@@ -12,6 +13,7 @@ export default function RestaurantProfileScreen() {
   const { token } = useAuth();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+
 
   useEffect(() => {
     const fetchRestaurantProfile = async () => {

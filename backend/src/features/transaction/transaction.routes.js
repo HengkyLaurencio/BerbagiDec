@@ -49,6 +49,8 @@ router.use(auth);
  */
 router.post('/', validate(schema.create), controller.create);
 
+router.get('/:id', controller.getTransactionDetail);
+
 /**
  * @swagger
  * /transactions/me:
@@ -62,6 +64,20 @@ router.post('/', validate(schema.create), controller.create);
  *         description: List of user's transactions
  */
 router.get('/me', controller.getMyTransactions);
+
+/**
+ * @swagger
+ * /transactions/store:
+ *   get:
+ *     summary: Get transactions for the logged-in user
+ *     tags: [Transactions]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of user's transactions
+ */
+router.get('/store', controller.getMyStoreTransactions);
 
 /**
  * @swagger
