@@ -1,48 +1,52 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import React, { useEffect, useState, useCallback} from 'react';
+import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';4
 import { router, useNavigation } from 'expo-router';
 import { Colors } from '@/constants/Colors';
-
+import { useFocusEffect } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { useAuth } from '@/contexts/AuthContext';
 
 export default function RestaurantProfileScreen() {
+  const [loading, setLoading] = useState<boolean>(true);
   const navigation = useNavigation();
   const { token,user } = useAuth();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
 
+  const fetchRestaurantProfile = async () => {
+    if (!token || !user) return;
+    setLoading(true);   
+    try {
+      const res = await fetch('http://hengkylaurencio.cloud:3000/store/me', {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
 
-  useEffect(() => {
-    const fetchRestaurantProfile = async () => {
-      if (!token || !user) return;
+      const json = await res.json();
 
-      try {
-        const res = await fetch('http://hengkylaurencio.cloud:3000/store/me', {
-          method: 'GET',
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        });
-
-        const json = await res.json();
-
-        if (json.status === 'success') {
-          setName(json.data.storeName);
-          setEmail(user.email);
-        } else {
-          console.warn('Gagal ambil data restoran:', json.message);
-        }
-      } catch (err) {
-        console.error('Error fetching restaurant profile:', err);
+      if (json.status === 'success') {
+        setName(json.data.storeName);
+        setEmail(user.email);
+      } else {
+        console.warn('Gagal ambil data restoran:', json.message);
       }
-    };
+    } catch (err) {
+      console.error('Error fetching restaurant profile:', err);
+    }finally{
+      setLoading(false);
+    }
+  };
 
-    fetchRestaurantProfile();
-  }, [token]);
+  useFocusEffect(
+    useCallback(() => {
+      fetchRestaurantProfile();
+    }, [token])
+  );
 
   return (
     <SafeAreaView style={styles.container}>
@@ -54,7 +58,11 @@ export default function RestaurantProfileScreen() {
 
         <View style={styles.profileSection}>
           <Ionicons name="home-outline" size={250} color={Colors.berbagiDec.primary} />
-            <Text style={styles.name}>{name}</Text>
+        {loading ? (
+        <ActivityIndicator size="small" color={'#fff'} />
+        ) : (
+          <Text style={styles.name}>{name}</Text>
+        )}
             <Text style={styles.email}>{email}</Text>
             <TouchableOpacity onPress={() => router.push('/restaurantFeatures/restaurant-editprofile')} style={styles.editButton}>
               <Text style={styles.editText}>Edit Profil</Text>

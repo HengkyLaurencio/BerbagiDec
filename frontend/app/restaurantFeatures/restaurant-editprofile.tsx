@@ -1,17 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import {
   View, Text, TextInput, StyleSheet, TouchableOpacity,
-  Image, ScrollView, Alert
+  Image, ScrollView, Alert, ActivityIndicator
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useFocusEffect } from '@react-navigation/native';
 import { useNavigation } from 'expo-router';
 import { Colors } from '@/constants/Colors';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '@/contexts/AuthContext';
+import { useCallback } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import MapView, { Marker } from 'react-native-maps';
 
 export default function EditRestaurantProfileScreen() {
+  const [loading, setLoading] = useState<boolean>(true);
   const navigation = useNavigation();
   const { token } = useAuth();
 
@@ -23,37 +26,41 @@ export default function EditRestaurantProfileScreen() {
   const [openTime, setOpenTime] = useState('');
   const [closeTime, setCloseTime] = useState('');
 
-  useEffect(() => {
-    const fetchRestaurant = async () => {
-      if (!token) return;
-      try {
-        const res = await fetch('http://hengkylaurencio.cloud:3000/restaurant/me', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-        });
-        const json = await res.json();
-        if (json.status === 'success') {
-          const data = json.data;
-          setStoreName(data.storeName);
-          setStoreDescription(data.storeDescription);
-          setStoreAddress(data.storeAddress);
-          setLatitude(data.latitude?.toString() || '');
-          setLongitude(data.longitude?.toString() || '');
-          setOpenTime(data.openTime);
-          setCloseTime(data.closeTime);
-        }
-      } catch (err) {
-        console.error('Error:', err);
+  const fetchRestaurant = async () => {
+    if (!token) return;
+    try {
+      const res = await fetch('http://hengkylaurencio.cloud:3000/store/me', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      const json = await res.json();
+      if (json.status === 'success') {
+        const data = json.data;
+        setStoreName(data.storeName);
+        setStoreDescription(data.storeDescription);
+        setStoreAddress(data.storeAddress);
+        setLatitude(data.latitude?.toString() || '');
+        setLongitude(data.longitude?.toString() || '');
+        setOpenTime(data.openTime);
+        setCloseTime(data.closeTime);
       }
-    };
-    fetchRestaurant();
-  }, [token]);
+    } catch (err) {
+      console.error('Error:', err);
+    }
+  };
+  
+  useFocusEffect(
+    useCallback(() => {
+      fetchRestaurant();
+    }, [token])
+  );
+
 
   const handleSave = async () => {
     try {
-      const res = await fetch('http://hengkylaurencio.cloud:3000/restaurant/update', {
+      const res = await fetch('http://hengkylaurencio.cloud:3000/store/me', {
         method: 'PUT',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -93,7 +100,6 @@ export default function EditRestaurantProfileScreen() {
 
         <Text style={styles.label}>Nama Restoran</Text>
         <TextInput style={styles.input} value={storeName} onChangeText={setStoreName} />
-
         <Text style={styles.label}>Deskripsi</Text>
         <TextInput style={styles.input} value={storeDescription} onChangeText={setStoreDescription} />
 

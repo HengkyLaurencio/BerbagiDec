@@ -80,8 +80,11 @@ export default function RestoranHomePage() {
 
   return (
     <View style={styles.container}>
+      {loading ? (
+      <ActivityIndicator size="large"  color={'#fff'} />
+      ) : (
       <Text style={styles.storeName}>{storeName}</Text>
-
+      )}
       <View style={styles.circleContainer}>
         <Svg width={200} height={200}>
           {/* Background Circle */}
