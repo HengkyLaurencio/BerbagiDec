@@ -104,9 +104,6 @@ export default function Login() {
             />
             <Text style={styles.rememberText}>  Ingat Saya</Text>
           </View>
-          <TouchableOpacity>
-            <Text style={styles.forgotPasswordText}>Lupa Password</Text>
-          </TouchableOpacity>
         </View>
 
         <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
