@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     textShadowOffset: {width: 0, height:5},
     textShadowRadius: 7,
-    marginTop: 480,
+    marginTop: 450,
     marginBottom: 30,
     fontSize: 28,
     color: '#fff',
