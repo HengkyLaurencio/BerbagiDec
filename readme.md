@@ -4,6 +4,36 @@ BerbagiDec adalah sebuah aplikasi mobile dan sistem backend yang dirancang untuk
 
 Aplikasi ini memungkinkan restoran atau mitra usaha untuk membagikan makanan berlebih kepada pengguna yang membutuhkan dengan cara yang efisien, transparan, dan berbasis komunitas.
 
+---
+
+## 🧪 Cara Menjalankan Proyek
+
+### 1. Clone repositori
+
+```bash
+git clone https://github.com/HengkyLaurencio/BerbagiDec.git
+cd BerbagiDec
+```
+
+### 2. Menjalankan Backend
+
+```bash
+cd backend
+npm install
+copy .env.example .env # edit .env sesuai dengan environment
+npm run dev
+```
+
+### 3. Menjalankan Frontend (Expo)
+
+```bash
+cd frontend
+npm install
+npx expo start
+```
+
+---
+
 ## 📦 Isi Repositori
 
 Repositori ini terdiri dari dua bagian utama:
@@ -73,39 +103,5 @@ Aplikasi ini dibangun sebagai inisiatif nyata untuk mendukung:
 ## 📸 Demo & Tampilan
 
 Tangkapan layar & video demo akan segera ditambahkan.
-
----
-
-## 🧪 Cara Menjalankan Proyek
-
-### 1. Clone repositori
-
-```bash
-git clone https://github.com/HengkyLaurencio/BerbagiDec.git
-cd BerbagiDec
-```
-
-### 2. Menjalankan Backend
-
-```bash
-cd backend
-npm install
-copy .env.example .env # edit .env sesuai dengan environment
-npm run dev
-```
-
-### 3. Menjalankan Frontend (Expo)
-
-```bash
-cd frontend
-npm install
-npx expo start
-```
-
----
-
-## 🙌 Kontribusi
-
-Kami membuka peluang kolaborasi untuk fitur baru, UI/UX, atau ekspansi dampak sosial lainnya. Silakan open issue atau pull request!
 
 ---
